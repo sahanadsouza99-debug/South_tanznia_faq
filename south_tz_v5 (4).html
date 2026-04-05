@@ -1,0 +1,2180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Monkey Adventures - South Tanzania Answer Machine</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --ink: #1C1410;
+  --parchment: #F8F2E8;
+  --warm: #F2EAD8;
+  --sienna: #B5470F;
+  --gold: #C4922A;
+  --olive: #5C6B34;
+  --dust: #D4C9B4;
+  --muted: #7A6E60;
+  --white: #FEFCF8;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Jost', sans-serif; background: var(--parchment); color: var(--ink); min-height: 100vh; font-size: 14px; }
+
+header {
+  background: var(--ink); padding: 0 32px; height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 2px solid var(--gold); position: sticky; top: 0; z-index: 50;
+}
+.brand { display: flex; align-items: center; gap: 10px; font-family: 'Cormorant Garamond', serif; color: var(--parchment); font-size: 19px; font-weight: 500; }
+.brand span { color: var(--gold); }
+.badge { font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); border: 1px solid #3A3028; padding: 3px 10px; border-radius: 2px; }
+
+.layout { display: grid; grid-template-columns: 272px 1fr; min-height: calc(100vh - 56px); }
+
+.sidebar { background: var(--warm); border-right: 1px solid var(--dust); display: flex; flex-direction: column; overflow-y: auto; }
+.sidebar-section { padding: 12px 14px; border-bottom: 1px solid var(--dust); }
+.sec-label { font-size: 9px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+.search-wrap { position: relative; }
+.search-wrap input { width: 100%; background: var(--white); border: 1px solid var(--dust); border-radius: 4px; padding: 8px 10px 8px 30px; font-family: 'Jost', sans-serif; font-size: 13px; color: var(--ink); outline: none; }
+.search-wrap input:focus { border-color: var(--sienna); }
+.si { position: absolute; left: 9px; top: 50%; transform: translateY(-50%); font-size: 12px; color: var(--muted); }
+.cat-list { display: flex; flex-direction: column; gap: 2px; }
+.cat-btn { display: flex; align-items: center; gap: 7px; padding: 5px 8px; border-radius: 5px; border: none; background: transparent; cursor: pointer; font-family: 'Jost', sans-serif; font-size: 12px; color: var(--ink); text-align: left; width: 100%; transition: background 0.12s; }
+.cat-btn:hover { background: var(--dust); }
+.cat-btn.active { background: var(--ink); color: var(--parchment); font-weight: 500; }
+.cc { margin-left: auto; font-size: 10px; background: rgba(0,0,0,0.1); padding: 1px 6px; border-radius: 10px; opacity: 0.6; }
+.cat-btn.active .cc { background: rgba(255,255,255,0.2); opacity: 1; }
+.q-list { display: flex; flex-direction: column; gap: 1px; }
+.q-btn { padding: 6px 8px; border-radius: 4px; border: 1px solid transparent; background: transparent; cursor: pointer; font-family: 'Jost', sans-serif; font-size: 11.5px; color: var(--ink); text-align: left; line-height: 1.4; transition: all 0.12s; }
+.q-btn:hover { background: var(--white); border-color: var(--dust); }
+.q-btn.active { background: #FEF0E4; border-color: var(--sienna); color: var(--sienna); font-weight: 500; }
+
+.main { display: flex; flex-direction: column; height: calc(100vh - 56px); overflow: hidden; }
+
+.input-area {
+  background: var(--parchment);
+  border-bottom: 1px solid var(--dust);
+  padding: 9px 20px 10px;
+  flex-shrink: 0;
+  position: relative;
+}
+.input-inner { max-width: 860px; margin: 0 auto; display: flex; gap: 8px; align-items: flex-end; position: relative; }
+.input-inner textarea { flex: 1; background: var(--white); border: 1px solid var(--dust); border-radius: 8px; padding: 9px 12px; font-family: 'Jost', sans-serif; font-size: 13px; color: var(--ink); outline: none; resize: none; min-height: 42px; max-height: 120px; line-height: 1.5; transition: border-color 0.15s; }
+.input-inner textarea:focus { border-color: var(--sienna); }
+.send-btn { background: var(--sienna); color: white; border: none; border-radius: 8px; width: 42px; height: 42px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; flex-shrink: 0; }
+.send-btn:hover { background: #9A3C0C; }
+.input-hint { font-size: 10.5px; color: var(--muted); margin-top: 5px; text-align: center; max-width: 860px; margin-left: auto; margin-right: auto; }
+
+.chat-scroll { flex: 1; overflow-y: auto; }
+.chat-container { display: flex; flex-direction: column; padding: 14px 20px 20px; gap: 10px; max-width: 860px; width: 100%; margin: 0 auto; }
+
+.chat-intro { background: var(--white); border: 1px solid var(--dust); border-radius: 10px; padding: 16px 20px; text-align: center; }
+.chat-intro h2 { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 500; margin-bottom: 4px; }
+.chat-intro p { font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+.intro-pills { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
+.intro-pill { font-size: 11px; padding: 4px 11px; border-radius: 20px; border: 1px solid var(--dust); background: var(--warm); color: var(--ink); cursor: pointer; transition: all 0.15s; }
+.intro-pill:hover { border-color: var(--sienna); color: var(--sienna); background: #FEF0E4; }
+
+.messages { display: flex; flex-direction: column; gap: 10px; }
+
+.msg-user { align-self: flex-end; background: var(--ink); color: var(--parchment); border-radius: 14px 14px 3px 14px; padding: 9px 14px; max-width: 75%; font-size: 13px; line-height: 1.5; }
+
+.msg-assistant { align-self: flex-start; max-width: 90%; }
+.msg-inner { background: var(--white); border: 1px solid var(--dust); border-radius: 14px 14px 14px 3px; padding: 13px 18px; font-size: 13px; line-height: 1.7; color: var(--ink); position: relative; }
+.msg-inner p { margin-bottom: 7px; }
+.msg-inner p:last-child { margin-bottom: 0; }
+.msg-inner ul { padding-left: 16px; margin: 6px 0; }
+.msg-inner li { margin-bottom: 4px; }
+.msg-inner strong { font-weight: 600; color: var(--ink); }
+.msg-inner .section-head { font-family: 'Cormorant Garamond', serif; font-size: 15px; font-weight: 600; color: var(--sienna); display: block; margin: 10px 0 3px; }
+.msg-inner hr { border: none; border-top: 1px solid var(--dust); margin: 10px 0; }
+.msg-inner .park-map { width: 100%; max-width: 480px; border-radius: 8px; margin: 10px 0; border: 1px solid var(--dust); display: block; }
+.msg-inner table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 12.5px; }
+.msg-inner th { background: var(--warm); padding: 7px 10px; text-align: left; font-weight: 600; border-bottom: 1px solid var(--dust); }
+.msg-inner td { padding: 6px 10px; border-bottom: 1px solid #EDE8DE; }
+.msg-inner td:first-child { font-weight: 500; }
+
+.copy-btn {
+  position: absolute; top: 8px; right: 8px;
+  display: flex; align-items: center; gap: 4px;
+  background: var(--warm); border: 1px solid var(--dust); border-radius: 5px;
+  padding: 3px 7px; font-family: 'Jost', sans-serif; font-size: 10.5px; color: var(--muted);
+  cursor: pointer; transition: all 0.15s; opacity: 0;
+}
+.msg-inner:hover .copy-btn { opacity: 1; }
+.copy-btn:hover { border-color: var(--sienna); color: var(--sienna); background: #FEF0E4; }
+.copy-btn.copied { color: var(--olive); border-color: var(--olive); background: rgba(92,107,52,0.08); }
+
+.source-strip { margin-top: 10px; padding: 9px 13px; background: #EEF4FF; border: 1px solid #C8D8F5; border-radius: 6px; }
+.source-label { font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #4A72B8; display: block; margin-bottom: 5px; }
+.source-tag { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; color: #2255A4; background: rgba(34,85,164,0.08); border: 1px solid rgba(34,85,164,0.2); border-radius: 12px; padding: 2px 10px; margin: 2px 3px 2px 0; text-decoration: none; transition: background 0.12s; }
+.source-tag:hover { background: rgba(34,85,164,0.15); text-decoration: underline; }
+
+.nuance-strip { margin-top: 10px; padding: 9px 13px; background: #FFF8E6; border: 1px solid #E0B94A; border-radius: 6px; font-size: 12px; color: #7A5800; line-height: 1.5; }
+.nuance-label { font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #9A7200; display: block; margin-bottom: 4px; }
+
+.tone-toggle {
+  display: flex; gap: 0; margin-bottom: 10px;
+  border: 1px solid var(--dust); border-radius: 6px; overflow: hidden;
+  width: fit-content;
+}
+.tone-btn {
+  padding: 4px 12px; font-size: 11px; font-family: 'Jost', sans-serif;
+  font-weight: 500; border: none; cursor: pointer; transition: all 0.15s;
+  background: transparent; color: var(--muted); letter-spacing: 0.3px;
+}
+.tone-btn.active { background: var(--ink); color: var(--parchment); }
+.tone-btn:not(.active):hover { background: var(--dust); color: var(--ink); }
+.tone-loading { display: flex; gap: 4px; align-items: center; padding: 6px 0; }
+.tone-loading span { width: 5px; height: 5px; background: var(--dust); border-radius: 50%; animation: tfblink 1.2s infinite; }
+.tone-loading span:nth-child(2) { animation-delay: .2s; }
+.tone-loading span:nth-child(3) { animation-delay: .4s; }
+.no-match { font-style: italic; color: var(--muted); font-size: 13px; }
+
+/* Unanswered log strip */
+.unanswered-strip { margin-top: 10px; padding: 9px 13px; background: #FFF0F0; border: 1px solid #F5C0C0; border-radius: 6px; font-size: 12px; color: #7A2020; line-height: 1.5; }
+.unanswered-label { font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #A03030; display: block; margin-bottom: 4px; }
+
+/* TOUR FINDER */
+.tf-wrapper { width: 100%; }
+.tour-finder { margin-top: 4px; background: var(--ink); border-radius: 10px; overflow: hidden; width: 100%; }
+.tf-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid rgba(196,168,130,.15); }
+.tf-title { font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: #C4A882; }
+.tf-restart { background: none; border: 1px solid rgba(196,168,130,.3); border-radius: 4px; color: #9B9388; font-family: 'Jost', sans-serif; font-size: 10px; cursor: pointer; padding: 3px 8px; transition: all .15s; }
+.tf-restart:hover { color: #C4A882; border-color: rgba(196,168,130,.6); }
+.tf-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+/* no max-height, no overflow — grows naturally, main chat scroll handles it */
+
+.tf-msg-bot { display: flex; gap: 8px; align-items: flex-start; }
+.tf-avatar { width: 26px; height: 26px; border-radius: 50%; background: rgba(196,168,130,.15); border: 1px solid rgba(196,168,130,.2); display: flex; align-items: center; justify-content: center; font-size: 11px; flex-shrink: 0; }
+.tf-bubble { background: #2E2B24; border: 1px solid rgba(196,168,130,.1); border-radius: 4px 12px 12px 12px; padding: 9px 13px; font-size: 13px; color: #E8E0D0; line-height: 1.55; max-width: 85%; }
+.tf-bubble strong { color: #FAF7F2; }
+.tf-bubble em { color: #C4A882; font-style: italic; font-family: 'Cormorant Garamond', serif; font-size: 14px; }
+
+.tf-msg-user { display: flex; justify-content: flex-end; }
+.tf-user-bubble { background: rgba(196,168,130,.18); border: 1px solid rgba(196,168,130,.25); border-radius: 12px 4px 12px 12px; padding: 8px 13px; font-size: 13px; color: #FAF7F2; max-width: 85%; }
+
+.tf-chips { display: flex; gap: 6px; flex-wrap: wrap; padding-left: 34px; }
+.tf-chip { padding: 7px 13px; border-radius: 18px; border: 1px solid rgba(196,168,130,.25); background: rgba(255,255,255,.03); color: #E8E0D0; font-family: 'Jost', sans-serif; font-size: 12.5px; cursor: pointer; transition: all .15s; white-space: nowrap; }
+.tf-chip:hover { background: rgba(196,168,130,.12); border-color: #C4A882; color: #FAF7F2; }
+.tf-chip.selected { background: rgba(196,168,130,.2); border-color: #C4A882; }
+.tf-chip:disabled { opacity: .45; cursor: default; }
+.tf-chip.park-chip { border-radius: 8px; font-size: 12px; }
+.tf-chip.park-chip.selected { background: rgba(74,103,65,.25); border-color: #7BAF70; color: #c4e8be; }
+.tf-confirm-btn { margin-left: 34px; margin-top: 2px; padding: 7px 16px; border-radius: 18px; border: 1px solid #C4A882; background: rgba(196,168,130,.12); color: #C4A882; font-family: 'Jost', sans-serif; font-size: 12.5px; font-weight: 500; cursor: pointer; transition: all .18s; }
+.tf-confirm-btn:hover { background: #C4A882; color: #1C1A16; }
+
+.tf-input-row { display: flex; gap: 8px; align-items: center; padding: 0 0 2px; }
+.tf-text-input { flex: 1; background: rgba(255,255,255,.04); border: 1px solid rgba(196,168,130,.2); border-radius: 20px; padding: 9px 14px; font-family: 'Jost', sans-serif; font-size: 13px; color: #FAF7F2; outline: none; transition: border-color .2s; }
+.tf-text-input:focus { border-color: #C4A882; }
+.tf-text-input::placeholder { color: rgba(107,100,86,.5); }
+.tf-text-input:disabled { opacity: .4; }
+.tf-send { width: 36px; height: 36px; border-radius: 50%; background: #C4A882; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all .15s; }
+.tf-send:hover { background: #D4B892; }
+.tf-send:disabled { opacity: .4; cursor: default; }
+.tf-send svg { fill: #1C1A16; }
+
+.tf-result-card { background: #1C1A16; border: 1px solid rgba(196,168,130,.18); border-radius: 10px; padding: 12px 14px; margin-top: 4px; }
+.tf-result-card + .tf-result-card { margin-top: 6px; }
+.tf-rc-meta { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 6px; }
+.tf-badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 500; letter-spacing: .8px; text-transform: uppercase; }
+.tf-badge-private { background: rgba(74,103,65,.2); color: #7BAF70; border: 1px solid rgba(74,103,65,.25); }
+.tf-badge-match { background: rgba(196,168,130,.12); color: #C4A882; border: 1px solid rgba(196,168,130,.2); }
+.tf-rc-name { font-family: 'Cormorant Garamond', serif; font-size: 15px; color: #FAF7F2; margin-bottom: 5px; line-height: 1.4; }
+.tf-rc-url { font-size: 11px; color: #C4A882; text-decoration: none; opacity: .75; display: block; word-break: break-all; }
+.tf-rc-url:hover { opacity: 1; text-decoration: underline; }
+.tf-typing { display: flex; gap: 4px; align-items: center; padding: 3px 0; }
+.tf-typing span { width: 5px; height: 5px; background: #6B6456; border-radius: 50%; animation: tfblink 1.2s infinite; }
+.tf-typing span:nth-child(2) { animation-delay: .2s; }
+.tf-typing span:nth-child(3) { animation-delay: .4s; }
+@keyframes tfblink { 0%,80%,100%{opacity:.2} 40%{opacity:1} }
+.tf-summary-strip { display: flex; flex-wrap: wrap; gap: 5px; padding-left: 34px; margin-top: 2px; }
+.tf-pill { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 10px; background: rgba(196,168,130,.1); border: 1px solid rgba(196,168,130,.2); font-size: 11px; color: #C4A882; }
+.tf-pill-label { color: #6B6456; font-size: 10px; }
+
+/* Unanswered log panel */
+.log-panel { padding: 16px 18px; }
+.log-panel .sec-label { margin-bottom: 8px; }
+.log-empty { font-size: 12px; color: var(--muted); font-style: italic; }
+.log-item { font-size: 11.5px; color: var(--ink); padding: 5px 8px; background: #FFF0F0; border: 1px solid #F5C0C0; border-radius: 4px; margin-bottom: 4px; line-height: 1.4; }
+.log-clear { margin-top: 8px; font-size: 11px; color: var(--muted); background: none; border: 1px solid var(--dust); border-radius: 4px; padding: 3px 9px; cursor: pointer; font-family: 'Jost', sans-serif; }
+.log-clear:hover { border-color: var(--sienna); color: var(--sienna); }
+
+@media (max-width: 700px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .chat-container { padding: 12px; }
+  .input-area { padding: 10px 16px 12px; }
+}
+
+/* Live suggestions dropdown */
+.suggestions-box {
+  position: absolute; top: 0; left: 0; right: 0;
+  background: var(--white); border: 1px solid var(--dust); border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1); overflow: hidden; z-index: 100;
+  max-height: 260px; overflow-y: auto;
+}
+.suggestions-box:empty { display: none; }
+.sugg-item {
+  padding: 8px 14px; font-size: 12.5px; cursor: pointer; color: var(--ink);
+  border-bottom: 1px solid var(--dust); line-height: 1.4; transition: background 0.1s;
+  display: flex; align-items: center; gap: 8px;
+}
+.sugg-item:last-child { border-bottom: none; }
+.sugg-item:hover, .sugg-item.highlighted { background: #FEF0E4; color: var(--sienna); }
+.sugg-item .sugg-icon { font-size: 13px; opacity: 0.7; flex-shrink: 0; }
+.sugg-item .sugg-label { flex: 1; }
+.sugg-item .sugg-cat { font-size: 10px; opacity: 0.5; flex-shrink: 0; }
+.sugg-tour-item { padding: 7px 14px; font-size: 12.5px; cursor: pointer; color: #4A7240;
+  border-bottom: 1px solid var(--dust); background: rgba(92,107,52,0.04);
+  display: flex; align-items: center; gap: 8px; transition: background 0.1s; }
+.sugg-tour-item:hover { background: rgba(92,107,52,0.1); }
+.sugg-separator { padding: 4px 14px; font-size: 9px; font-weight: 700; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--muted); background: var(--warm); }
+
+/* ADMIN PANEL */
+.admin-trigger { position: fixed; bottom: 18px; right: 18px; z-index: 200; background: var(--ink); color: var(--gold); border: 1px solid var(--gold); border-radius: 50%; width: 38px; height: 38px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0.35; transition: opacity 0.2s; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+.admin-trigger:hover { opacity: 1; }
+.admin-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 300; align-items: center; justify-content: center; }
+.admin-overlay.open { display: flex; }
+.admin-panel { background: var(--white); border-radius: 12px; width: 700px; max-width: 96vw; max-height: 92vh; display: flex; flex-direction: column; box-shadow: 0 8px 40px rgba(0,0,0,0.3); overflow: hidden; }
+.admin-header { background: var(--ink); padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.admin-header h2 { font-family: "Cormorant Garamond", serif; color: var(--gold); font-size: 18px; font-weight: 500; }
+.admin-close { background: none; border: none; color: var(--muted); font-size: 22px; cursor: pointer; line-height: 1; padding: 2px 6px; border-radius: 4px; }
+.admin-close:hover { color: var(--parchment); }
+.admin-body { flex: 1; overflow-y: auto; padding: 18px 20px; display: flex; flex-direction: column; gap: 14px; }
+.admin-tabs { display: flex; gap: 6px; flex-shrink: 0; }
+.admin-tab { padding: 6px 16px; border-radius: 6px; border: 1px solid var(--dust); background: var(--warm); font-family: "Jost", sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; color: var(--muted); transition: all 0.15s; }
+.admin-tab.active { background: var(--ink); color: var(--parchment); border-color: var(--ink); }
+.admin-section { display: none; flex-direction: column; gap: 12px; }
+.admin-section.active { display: flex; }
+.admin-field { display: flex; flex-direction: column; gap: 4px; }
+.admin-field label { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); }
+.admin-field input, .admin-field select, .admin-field textarea { background: var(--warm); border: 1px solid var(--dust); border-radius: 6px; padding: 8px 10px; font-family: "Jost", sans-serif; font-size: 13px; color: var(--ink); outline: none; transition: border-color 0.15s; width: 100%; }
+.admin-field input:focus, .admin-field select:focus, .admin-field textarea:focus { border-color: var(--sienna); }
+.admin-field textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+.admin-field small { font-size: 10.5px; color: var(--muted); }
+.admin-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.admin-btn { padding: 9px 18px; border-radius: 7px; border: none; font-family: "Jost", sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+.admin-btn-primary { background: var(--sienna); color: white; }
+.admin-btn-primary:hover { background: #9A3C0C; }
+.admin-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+.admin-btn-secondary { background: var(--warm); color: var(--ink); border: 1px solid var(--dust); }
+.admin-btn-secondary:hover { border-color: var(--sienna); color: var(--sienna); }
+.admin-btn-danger { background: #FFF0F0; color: #A03030; border: 1px solid #F5C0C0; }
+.admin-btn-danger:hover { background: #FFE0E0; }
+.admin-status { font-size: 12px; padding: 8px 12px; border-radius: 6px; display: none; }
+.admin-status.ok { background: rgba(92,107,52,0.1); color: var(--olive); border: 1px solid rgba(92,107,52,0.3); display: block; }
+.admin-status.err { background: #FFF0F0; color: #A03030; border: 1px solid #F5C0C0; display: block; }
+.admin-status.loading { background: var(--warm); color: var(--muted); border: 1px solid var(--dust); display: block; }
+.admin-kb-list { display: flex; flex-direction: column; gap: 6px; max-height: 360px; overflow-y: auto; }
+.admin-kb-item { background: var(--warm); border: 1px solid var(--dust); border-radius: 7px; padding: 9px 12px; display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.admin-kb-item-info { flex: 1; min-width: 0; }
+.admin-kb-item-label { font-size: 12.5px; font-weight: 500; color: var(--ink); line-height: 1.4; }
+.admin-kb-item-meta { font-size: 10.5px; color: var(--muted); margin-top: 2px; }
+.admin-kb-item-actions { display: flex; gap: 5px; flex-shrink: 0; }
+.admin-kb-action { padding: 3px 9px; border-radius: 4px; border: 1px solid var(--dust); background: var(--white); font-size: 11px; cursor: pointer; font-family: "Jost", sans-serif; color: var(--ink); transition: all 0.12s; }
+.admin-kb-action:hover { border-color: var(--sienna); color: var(--sienna); }
+.admin-kb-action.del:hover { border-color: #F5C0C0; color: #A03030; background: #FFF0F0; }
+.admin-search { width: 100%; background: var(--warm); border: 1px solid var(--dust); border-radius: 6px; padding: 7px 10px; font-family: "Jost", sans-serif; font-size: 13px; color: var(--ink); outline: none; }
+.admin-search:focus { border-color: var(--sienna); }
+.admin-lock { padding: 32px 24px; display: flex; flex-direction: column; gap: 14px; align-items: center; text-align: center; }
+.admin-lock p { font-size: 13px; color: var(--muted); }
+.admin-lock input { width: 100%; max-width: 280px; background: var(--warm); border: 1px solid var(--dust); border-radius: 8px; padding: 10px 14px; font-family: "Jost", sans-serif; font-size: 14px; color: var(--ink); outline: none; text-align: center; }
+.admin-lock input:focus { border-color: var(--sienna); }
+.sync-bar { font-size: 11px; color: var(--muted); text-align: right; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">🐒 Monkey <span>Adventures</span></div>
+  <div class="badge">South Tanzania - Answer Machine</div>
+</header>
+
+<div class="layout">
+
+<div class="sidebar">
+  <div class="sidebar-section">
+    <div class="sec-label">Search Topics</div>
+    <div class="search-wrap">
+      <span class="si">🔍</span>
+      <input type="text" id="searchInput" placeholder="Search questions..." oninput="handleSearch()"/>
+    </div>
+  </div>
+  <div class="sidebar-section">
+    <div class="sec-label">Categories</div>
+    <div class="cat-list" id="catList"></div>
+  </div>
+  <div class="sidebar-section" style="flex:1;">
+    <div class="sec-label" id="qLabel">All Questions</div>
+    <div class="q-list" id="qList"></div>
+  </div>
+  <div class="sidebar-section log-panel">
+    <div class="sec-label">⚠️ Unanswered Questions</div>
+    <div id="logList"><div class="log-empty">None yet - questions with no KB match will appear here.</div></div>
+    <button class="log-clear" onclick="clearLog()">Clear log</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="input-area">
+    <div class="input-inner">
+      <textarea id="userInput" placeholder="Ask anything about South Tanzania - parks, activities, transfers, accommodation, tours…" rows="1"
+        onkeydown="handleKey(event)" oninput="autoResize(this);handleSuggestions(this.value)"></textarea>
+      <button class="send-btn" onclick="sendMessage()">➤</button>
+    </div>
+    <div class="input-sugg-wrap" style="max-width:860px;margin:0 auto;position:relative;">
+      <div id="suggestionsBox" class="suggestions-box" style="display:none;"></div>
+    </div>
+    <div class="input-hint">Mikumi · Nyerere · Ruaha · Udzungwa · Logistics · Tours — suggestions appear as you type</div>
+  </div>
+
+  <div class="chat-scroll" id="chatScroll">
+    <div class="chat-container" id="chatContainer">
+      <div class="chat-intro" id="chatIntro">
+        <h2>🦁 South Tanzania Safari Assistant</h2>
+        <p>Ask me anything about Mikumi, Nyerere (Selous), Ruaha, and Udzungwa - parks, activities, transfers, accommodation, connectivity, and recommended tours. Or pick a question from the sidebar.</p>
+        <div class="intro-pills">
+          <div class="intro-pill" onclick="quickAsk('What parks are in South Tanzania?')">🗺️ The Parks</div>
+          <div class="intro-pill" onclick="quickAsk('How do I get to South Tanzania from Dar es Salaam?')">✈️ Getting there</div>
+          <div class="intro-pill" onclick="quickAsk('Can I do a boat safari in Nyerere?')">🚤 Boat safari</div>
+          <div class="intro-pill" onclick="quickAsk('Which park is best for night game drives?')">🌙 Night drives</div>
+          <div class="intro-pill" onclick="quickAsk('What wildlife can I see in Ruaha?')">🐆 Ruaha wildlife</div>
+          <div class="intro-pill" onclick="quickAsk('How many days do I need for Nyerere?')">📅 How many days</div>
+          <div class="intro-pill" onclick="quickAsk('Can I connect Nyerere and Ruaha?')">🔗 Connecting parks</div>
+          <div class="intro-pill" onclick="quickAsk('Can you recommend a tour for me?')">🧭 Find a tour</div>
+        </div>
+      </div>
+      <div class="messages" id="messages"></div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- Admin trigger button -->
+<button class="admin-trigger" onclick="openAdmin()" title="Admin">⚙</button>
+
+<!-- Admin overlay -->
+<div class="admin-overlay" id="adminOverlay" onclick="overlayClick(event)">
+  <div class="admin-panel" id="adminPanel">
+    <div class="admin-header">
+      <h2>⚙ KB Admin Panel</h2>
+      <button class="admin-close" onclick="closeAdmin()">×</button>
+    </div>
+    <div class="admin-body" id="adminBody">
+      <!-- lock screen shown first -->
+      <div class="admin-lock" id="adminLock">
+        <p>🔒 Enter your admin password to continue.</p>
+        <input type="password" id="adminPassInput" placeholder="Password" onkeydown="if(event.key==='Enter') checkAdminPass()"/>
+        <button class="admin-btn admin-btn-primary" onclick="checkAdminPass()">Unlock</button>
+        <div class="admin-status" id="lockStatus"></div>
+      </div>
+      <!-- main panel hidden until unlocked -->
+      <div id="adminMain" style="display:none; flex-direction:column; gap:14px;">
+        <div class="sync-bar" id="syncBar">Last synced: never</div>
+        <div class="admin-tabs">
+          <button class="admin-tab active" onclick="switchTab('add',this)">+ Add Question</button>
+          <button class="admin-tab" onclick="switchTab('edit',this)">Edit / Delete</button>
+        </div>
+
+        <!-- ADD TAB -->
+        <div class="admin-section active" id="tab-add">
+          <div class="admin-row">
+            <div class="admin-field">
+              <label>Category</label>
+              <select id="f-cat">
+                <option value="overview">Parks Overview</option>
+                <option value="mikumi">Mikumi</option>
+                <option value="nyerere">Nyerere (Selous)</option>
+                <option value="ruaha">Ruaha</option>
+                <option value="udzungwa">Udzungwa Mountains</option>
+                <option value="activities">Activities</option>
+                <option value="logistics">Getting There</option>
+                <option value="accommodation">Accommodation</option>
+                <option value="operations">Planning &amp; Tips</option>
+              </select>
+            </div>
+            <div class="admin-field">
+              <label>Question / Label</label>
+              <input type="text" id="f-label" placeholder="e.g. Can I see rhinos in Ruaha?"/>
+            </div>
+          </div>
+          <div class="admin-field">
+            <label>Keywords <small style="text-transform:none;letter-spacing:0">(comma separated)</small></label>
+            <input type="text" id="f-keywords" placeholder="rhinos ruaha, ruaha rhino, rhino sighting"/>
+            <small>Think about how a team member would type the question</small>
+          </div>
+          <div class="admin-field">
+            <label>Answer (HTML allowed)</label>
+            <textarea id="f-answer" rows="5" placeholder="&lt;p&gt;Ruaha does not have rhinos...&lt;/p&gt;"></textarea>
+            <small>Use &lt;p&gt;, &lt;ul&gt;, &lt;li&gt;, &lt;strong&gt; tags. Emojis OK — they show in Casual, are stripped in Formal automatically.</small>
+          </div>
+          <div class="admin-field">
+            <label>Sales Note (optional)</label>
+            <input type="text" id="f-nuance" placeholder="Internal note for the sales team — shown in yellow strip"/>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <button class="admin-btn admin-btn-primary" id="addBtn" onclick="adminAddEntry()">Save &amp; Sync to Sheet</button>
+            <button class="admin-btn admin-btn-secondary" onclick="clearAddForm()">Clear</button>
+          </div>
+          <div class="admin-status" id="addStatus"></div>
+        </div>
+
+        <!-- EDIT TAB -->
+        <div class="admin-section" id="tab-edit">
+          <input class="admin-search" id="adminSearchInput" placeholder="Search questions to edit..." oninput="renderAdminList()"/>
+          <div class="admin-kb-list" id="adminKbList"></div>
+          <div class="admin-status" id="editStatus"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════════
+//  CATEGORIES
+// ════════════════════════════════════════════════════════════════
+const CATEGORIES = [
+  { id:'overview',    icon:'🗺️', label:'Parks Overview' },
+  { id:'mikumi',      icon:'🦒', label:'Mikumi' },
+  { id:'nyerere',     icon:'🚤', label:'Nyerere (Selous)' },
+  { id:'ruaha',       icon:'🐆', label:'Ruaha' },
+  { id:'udzungwa',    icon:'🌿', label:'Udzungwa Mountains' },
+  { id:'activities',  icon:'🎈', label:'Activities' },
+  { id:'logistics',   icon:'✈️', label:'Getting There' },
+  { id:'accommodation',icon:'🏕️',label:'Accommodation' },
+  { id:'operations',  icon:'📋', label:'Planning & Tips' },
+];
+
+// ════════════════════════════════════════════════════════════════
+//  KNOWLEDGE BASE
+// ════════════════════════════════════════════════════════════════
+const KB = [
+
+  // ── OVERVIEW ──
+  { id:'ov1', cat:'overview', label:'What parks are in South Tanzania?',
+    keywords:['south tanzania','parks','which parks','overview','circuit','southern circuit','what parks'],
+    answer:`<p>South Tanzania covers four main national parks - all accessible from <strong>Dar es Salaam</strong>:</p>
+<ul>
+  <li><strong>Mikumi National Park</strong> - the most accessible southern park, about 6–6.5 hours by road. Compact, great for budget tours and first-time visitors.</li>
+  <li><strong>Nyerere National Park</strong> (formerly Selous) - one of Africa's largest game reserves, about 4–4.5 hours from Dar. Famous for boat safaris, walking safaris, and wild dogs.</li>
+  <li><strong>Ruaha National Park</strong> - Tanzania's second-largest park, ~10–10.5 hours from Dar. Remote, exclusive, superb for big cats and wild dogs.</li>
+  <li><strong>Udzungwa Mountains National Park</strong> - primarily a hiking and birding destination, ~8–8.5 hours from Dar. Best added as a one-day stop on 6+ day tours.</li>
+</ul>
+<p>All four parks form the <strong>Southern Circuit</strong>, and can be combined into multi-park itineraries starting and ending in Dar es Salaam.</p>` },
+
+  { id:'ov2', cat:'overview', label:'How does South Tanzania compare to North Tanzania?',
+    keywords:['north vs south','northern circuit','compare','difference','south vs north','serengeti','better','crowded'],
+    answer:`<p>Both circuits are world-class, but they offer very different experiences:</p>
+<ul>
+  <li><strong>Crowds:</strong> South Tanzania is significantly quieter and less crowded than the Northern Circuit (Serengeti, Ngorongoro).</li>
+  <li><strong>Base city:</strong> North = Arusha. South = Dar es Salaam.</li>
+  <li><strong>Unique activities:</strong> The South offers boat safaris on the Rufiji River (Nyerere) - not available anywhere in the North.</li>
+  <li><strong>Wild dogs:</strong> Both Nyerere and Ruaha are among the best places in Africa to see African wild dogs.</li>
+  <li><strong>Cost:</strong> The South can be more affordable, especially Mikumi.</li>
+  <li><strong>Migration:</strong> The Great Wildebeest Migration is a Northern Circuit (Serengeti) event - not present in the South.</li>
+</ul>
+<p>The South is ideal for travellers who want an <strong>off-the-beaten-path, uncrowded safari</strong> with diverse activities.</p>` },
+
+  { id:'ov3', cat:'overview', label:'Can I combine South and North Tanzania in one trip?',
+    keywords:['combine north south','both circuits','north and south','arusha and dar','one trip'],
+    answer:`<p>Yes - combining both circuits is possible and makes for an excellent longer safari. The typical approach is to fly between Dar es Salaam and Arusha (or Kilimanjaro), as driving between the two circuits is not practical.</p>
+<p>A combined itinerary typically needs <strong>10+ days</strong> to do both circuits justice. If you're short on time, it's better to pick one circuit and explore it thoroughly rather than rushing both.</p>`,
+    nuanceText: 'Do not try to connect the two circuits by road. Always advise a flight between Dar and Arusha/Kilimanjaro for a combined itinerary.' },
+
+  { id:'ov4', cat:'overview', label:'Which park is best for a first-time safari visitor?',
+    keywords:['first time','first safari','beginner','first visit','which park first','best for first'],
+    answer:`<p>For a first-time visitor to South Tanzania, <strong>Nyerere National Park</strong> is the top recommendation - it offers the full safari experience including game drives, boat safaris, and walking safaris, with excellent wildlife and an iconic river setting.</p>
+<p>If budget is the priority, <strong>Mikumi</strong> is the most accessible and affordable entry point - it's compact, easy to combine with Dar es Salaam, and has solid wildlife including elephants, lions, and hippos.</p>` },
+
+  { id:'ov5', cat:'overview', label:'Where can I find hippos, wild dogs, elephants and other wildlife in South Tanzania?',
+    keywords:['where to find hippos','where to see hippos','find hippos','where are hippos','where to find wild dogs','where to see wild dogs','find wild dogs','where to find elephants','where to see elephants','find elephants','where to find lions','where to see lions','find lions','where to find leopards','where to see leopards','find leopards','where to find crocodiles','where to see crocodiles','find crocodiles','where to find monkeys','where to see monkeys','best park for hippos','best park for wild dogs','best park for elephants','best park for lions','best park for leopards','spot wildlife','wildlife spotting','where to spot','which park has','which park is best for','can i see hippos','can i see wild dogs','can i see elephants','where are the animals'],
+    answer:`<p>Here's where to find the key wildlife across South Tanzania's parks:</p>
+<ul>
+  <li>🦛 <strong>Hippos</strong> — <strong>Mikumi</strong> (famous Hippo Pools) and <strong>Nyerere</strong> (abundant along the Rufiji River)</li>
+  <li>🐊 <strong>Crocodiles</strong> — <strong>Nyerere</strong>, along the Rufiji River</li>
+  <li>🐕 <strong>African Wild Dogs</strong> — <strong>Nyerere</strong> and <strong>Ruaha</strong> are two of the best places in East Africa (sighting chance under 20% — never guaranteed)</li>
+  <li>🐘 <strong>Elephants</strong> — <strong>Ruaha</strong> has one of the highest concentrations in East Africa; also seen in Mikumi and Nyerere</li>
+  <li>🦁 <strong>Lions</strong> — <strong>Ruaha</strong> (large prides, famous for buffalo-hunting behaviour); also in Mikumi and Nyerere</li>
+  <li>🐆 <strong>Leopards</strong> — <strong>Ruaha</strong> offers the best chances</li>
+  <li>🐒 <strong>Primates (Colobus, Mangabey)</strong> — <strong>Udzungwa Mountains</strong> only; endemic species found nowhere else</li>
+  <li>🐦 <strong>Birdlife</strong> — exceptional across all four parks, especially Udzungwa and Nyerere</li>
+</ul>` },
+
+  // ── MIKUMI ──
+  { id:'mk1', cat:'mikumi', label:'What is Mikumi National Park?',
+    keywords:['mikumi','mikumi park','what is mikumi','mikumi national park','about mikumi'],
+    answer:`<p><strong>Mikumi National Park</strong> is one of the most accessible safari parks in Tanzania and a popular entry point for South Tanzania safaris.</p>
+<ul>
+  <li>Located about <strong>300 km from Dar es Salaam</strong> - roughly 6 to 6.5 hours by road</li>
+  <li>A <strong>smaller, compact park</strong> - well suited for 2–3 day tours</li>
+  <li>Good for <strong>budget tours</strong></li>
+  <li>Offers a genuine safari experience without the crowds of the Northern Circuit</li>
+</ul>
+<p>It's an excellent starting or ending point for multi-park Southern Circuit itineraries.</p>` },
+
+  { id:'mk2', cat:'mikumi', label:'What wildlife can I see at Mikumi?',
+    keywords:['mikumi wildlife','animals mikumi','mikumi animals','what to see mikumi','mikumi big five','hippo pool','hippos mikumi','hippo','does mikumi have','elephants mikumi','lions mikumi','wildlife mikumi','animals in mikumi','see in mikumi','mikumi species','where to find hippos','where to see hippos','find hippos','where are hippos','hippos in mikumi','hippo pools','where to find elephants mikumi','where to see lions mikumi','best park for hippos','can i see hippos','spot hippos'],
+    answer:`<p>Mikumi offers solid wildlife viewing for its size. Key species include:</p>
+<ul>
+  <li>🐘 Elephants</li>
+  <li>🦁 Lions</li>
+  <li>🦒 Giraffes</li>
+  <li>🦓 Zebras</li>
+  <li>🐃 Buffalo</li>
+  <li>🦬 Wildebeest</li>
+  <li>🦌 Antelopes</li>
+  <li>🦛 Hippos - best seen at the famous <strong>Hippo Pools</strong></li>
+</ul>
+<p>The Hippo Pools are a highlight and not to be missed during any Mikumi visit.</p>` },
+
+  { id:'mk3', cat:'mikumi', label:'How many days should I spend at Mikumi?',
+    keywords:['mikumi days','how long mikumi','mikumi duration','how many days mikumi','mikumi nights'],
+    answer:`<p>Mikumi is a <strong>compact park</strong>, so the recommended stay is:</p>
+<ul>
+  <li><strong>Minimum: 2 days</strong> - enough to see the main areas and wildlife highlights</li>
+  <li><strong>Maximum: 3 days</strong> - beyond this, you're likely to have covered the park well</li>
+</ul>
+<p>Longer stays at Mikumi are not recommended - it's better to combine it with Nyerere, Ruaha, or Udzungwa if you have more time.</p>` },
+
+  { id:'mk4', cat:'mikumi', label:'How far is Mikumi from Dar es Salaam and other parks?',
+    keywords:['mikumi distance','mikumi dar','mikumi how far','mikumi transfer','mikumi drive','mikumi to'],
+    answer:`<p>Travel times from/to Mikumi:</p>
+<table>
+  <tr><th>Route</th><th>Distance / Time</th></tr>
+  <tr><td>Mikumi ↔ Dar es Salaam</td><td>~300 km / 6–6.5 hours</td></tr>
+  <tr><td>Mikumi ↔ Nyerere</td><td>~6–6.5 hours</td></tr>
+  <tr><td>Mikumi ↔ Udzungwa</td><td>~2–2.5 hours</td></tr>
+  <tr><td>Mikumi ↔ Ruaha</td><td>~5.5–6 hours</td></tr>
+  <tr><td>Morogoro ↔ Mikumi</td><td>~2–2.5 hours</td></tr>
+</table>
+<p>Mikumi acts as a <strong>central hub</strong> for the Southern Circuit - it's the natural stopover between Nyerere and Ruaha/Udzungwa.</p>` },
+
+  { id:'mk5', cat:'mikumi', label:'How do I get to Mikumi - road, flight, or train?',
+    keywords:['getting to mikumi','mikumi connectivity','mikumi flight','mikumi train','mikumi road','mikumi airstrip','auric air','safari airlink','coastal air','kikoboga'],
+    answer:`<p>Mikumi can be reached three ways:</p>
+<ul>
+  <li><strong>By road (Land Cruiser):</strong> 6–6.5 hours from Dar es Salaam. The standard option for most safaris.</li>
+  <li><strong>By flight:</strong> Airlines serving Mikumi include <strong>Auric Air, Safari Airlink, and Coastal Air</strong>. The airstrip is <strong>Kikoboga Airstrip</strong>.</li>
+  <li><strong>By train:</strong> Train runs from Dar es Salaam to Morogoro and back. Not commonly used for safaris but an option for those based in Morogoro.</li>
+</ul>`,
+    nuanceText: 'If the client is starting and ending in Morogoro, arrange the safari through the accommodation they are staying at - not through our standard process.' },
+
+  { id:'mk6', cat:'mikumi', label:'Can I do a day trip to Mikumi from Zanzibar or Dar?',
+    keywords:['mikumi day trip','mikumi one day','zanzibar mikumi','1 day mikumi','mikumi from zanzibar'],
+    answer:`<p><strong>We do not offer 1-day Mikumi tours starting and ending in Zanzibar or Dar es Salaam.</strong> The drive is 6+ hours each way, making a day trip impractical.</p>
+<p>However, 1-day tours <strong>can be offered from Morogoro</strong>, since Morogoro is much closer to Mikumi.</p>
+<p>For clients coming from Zanzibar who want to do a <strong>2-day Mikumi tour by road</strong>, they should arrive in Dar es Salaam <strong>one day prior</strong> and begin the drive the following morning.</p>`,
+    nuanceText: 'Never offer 1-day Mikumi trips from Dar or Zanzibar. Only from Morogoro.' },
+
+  { id:'mk7', cat:'mikumi', label:'What add-on activities are available at Mikumi?',
+    keywords:['mikumi activities','mikumi add-on','masai village mikumi','what to do mikumi'],
+    answer:`<p>In addition to standard game drives, Mikumi offers:</p>
+<ul>
+  <li><strong>Masai Village Tour</strong> - a cultural visit to a local Masai village, conducted outside the park. This is the same experience offered on North Tanzania tours.</li>
+</ul>
+<p>Note: Any tour can start and end at Mikumi.</p>` },
+
+  { id:'mk8', cat:'mikumi', label:'What are the Safari Airlink flight routes for South Tanzania?',
+    keywords:['safari airlink','airlink routes','flight schedule','sal01','sal02','sal03','sal04','flight times','south tanzania flight'],
+    answer:`<p>Safari Airlink operates scheduled flights covering the Southern Circuit. Here are the key routes:</p>
+<p><strong>SAL01 & SAL02 (Dar → South):</strong></p>
+<table>
+  <tr><th>Stop</th><th>Time</th></tr>
+  <tr><td>Dar es Salaam</td><td>10:30</td></tr>
+  <tr><td>Selous (Nyerere)</td><td>11:00</td></tr>
+  <tr><td>Mikumi</td><td>11:55</td></tr>
+  <tr><td>Southern Highlands / Iringa</td><td>12:30</td></tr>
+  <tr><td>Ruaha</td><td>13:00</td></tr>
+</table>
+<p><strong>SAL03 & SAL04 (Ruaha → Dar):</strong></p>
+<table>
+  <tr><th>Stop</th><th>Time</th></tr>
+  <tr><td>Ruaha</td><td>13:15</td></tr>
+  <tr><td>Iringa / Southern Highlands</td><td>13:45</td></tr>
+  <tr><td>Mikumi</td><td>14:45</td></tr>
+  <tr><td>Selous (Nyerere)</td><td>15:00</td></tr>
+  <tr><td>Zanzibar / Mafia</td><td>15:45</td></tr>
+  <tr><td>Dar es Salaam</td><td>17:00</td></tr>
+</table>` },
+
+  // ── NYERERE ──
+  { id:'ny1', cat:'nyerere', label:'What is Nyerere National Park (formerly Selous)?',
+    keywords:['nyerere','selous','nyerere national park','about nyerere','what is selous','selous game reserve','nyerere selous'],
+    answer:`<p><strong>Nyerere National Park</strong> - formerly known as Selous Game Reserve - is one of Africa's largest protected areas and a flagship of South Tanzania.</p>
+<ul>
+  <li>Located <strong>4–4.5 hours from Dar es Salaam</strong> by road</li>
+  <li>Features diverse landscapes: <strong>savannahs, woodlands, wetlands</strong>, and the life-rich <strong>Rufiji River</strong></li>
+  <li>The Rufiji River supports large populations of <strong>hippos, crocodiles, and bird species</strong></li>
+  <li>One of the best parks in Africa for <strong>African wild dogs</strong></li>
+  <li>Far less crowded than the Northern Circuit - a truly wild, remote experience</li>
+  <li>Offers a unique combination of <strong>land and river-based wildlife viewing</strong></li>
+</ul>
+<p>Nyerere is the centrepiece of most South Tanzania itineraries and works as the <strong>first or last park</strong> on a multi-park tour.</p>` },
+
+  { id:'ny2', cat:'nyerere', label:'What wildlife can I see at Nyerere?',
+    keywords:['nyerere wildlife','selous animals','what animals nyerere','wild dogs nyerere','wildlife selous','nyerere big five','hippos nyerere','crocodiles nyerere','elephants nyerere','lions nyerere','does nyerere have','animals in nyerere','see in nyerere','nyerere species','hippo','croc','wild dog','buffalo nyerere','where to find hippos nyerere','where to see wild dogs','find wild dogs','where are crocodiles','spot crocodiles','where to see hippos','best park for wild dogs','can i see wild dogs','where to find crocodiles','hippos rufiji','crocs rufiji'],
+    answer:`<p>Nyerere is one of Tanzania's richest parks for wildlife diversity:</p>
+<ul>
+  <li>🐘 <strong>Elephants</strong></li>
+  <li>🦁 <strong>Lions</strong></li>
+  <li>🦒 <strong>Giraffes</strong></li>
+  <li>🐃 <strong>Buffalo</strong></li>
+  <li>🐊 <strong>Crocodiles</strong> - in the Rufiji River</li>
+  <li>🦛 <strong>Hippos</strong> - abundant along the Rufiji</li>
+  <li>🐕 <strong>African Wild Dogs</strong> - endangered; Nyerere is one of the best places in East Africa to see them, though sighting chances are less than 20%</li>
+  <li>🐦 Rich <strong>birdlife</strong> throughout</li>
+</ul>
+<p>The river ecosystems make Nyerere especially diverse - you see species that you simply cannot encounter in dry-land-only parks.</p>` },
+
+  { id:'ny3', cat:'nyerere', label:'How many days should I spend at Nyerere?',
+    keywords:['nyerere days','how long nyerere','nyerere duration','how many nights nyerere','selous days'],
+    answer:`<p>Given the size and diversity of Nyerere:</p>
+<ul>
+  <li><strong>Minimum recommended: 3 days</strong> - this is the bare minimum to cover the park meaningfully, including both game drives and boat safari</li>
+  <li><strong>4 days:</strong> Ideal for a relaxed, unhurried visit - our most recommended duration for Nyerere-only trips</li>
+  <li><strong>5 days+:</strong> Best for clients who want to thoroughly explore the park or combine Nyerere with Mikumi</li>
+</ul>
+<p>Nyerere can be positioned at the <strong>beginning or end</strong> of a Southern Circuit tour.</p>` },
+
+  { id:'ny4', cat:'nyerere', label:'Can Nyerere connect directly to other southern parks?',
+    keywords:['nyerere connect','nyerere ruaha','nyerere udzungwa','nyerere mikumi connection','connecting parks','park connectivity nyerere'],
+    answer:`<p><strong>Nyerere can directly connect only with Mikumi.</strong></p>
+<ul>
+  <li>✅ <strong>Nyerere → Mikumi:</strong> Direct connection - no stopover needed</li>
+  <li>⚠️ <strong>Nyerere → Ruaha:</strong> Mikumi must be a stopover - cannot connect directly</li>
+  <li>⚠️ <strong>Nyerere → Udzungwa:</strong> Mikumi must be a stopover - cannot connect directly</li>
+</ul>
+<p>This makes Mikumi the natural <strong>hub park</strong> for multi-park Southern Circuit itineraries.</p>`,
+    nuanceText: 'Never route Nyerere directly to Ruaha or Udzungwa. Mikumi must always be in between.' },
+
+  { id:'ny5', cat:'nyerere', label:'What airstrips and camps are in Nyerere?',
+    keywords:['nyerere airstrip','selous airstrip','mtemere','matambwe','sumbazi','kiba','beho beho airstrip','siwandu airstrip','stieglers gorge airstrip','camps nyerere','lodges nyerere'],
+    answer:`<p>Nyerere has several airstrips, each serving specific camps:</p>
+<ul>
+  <li><strong>Mtemere Airstrip:</strong> Rufiji River Camp, other lodges along the Rufiji River (central cluster)</li>
+  <li><strong>Matambwe Airstrip:</strong> Beho Beho Camp, lodges near Matambwe Gate and park headquarters</li>
+  <li><strong>Sumbazi Airstrip:</strong> The Retreat Selous</li>
+  <li><strong>Kiba Airstrip:</strong> Kiba Point Selous Camp, Sand Rivers Selous</li>
+  <li><strong>Beho Beho Airstrip:</strong> Beho Beho Camp</li>
+  <li><strong>Siwandu Airstrip:</strong> Siwandu Camp, Lake Manze Camp</li>
+  <li><strong>Stiegler's Gorge Airstrip:</strong> Selous Serena Camp, Serena Mivumo River Lodge, Stiegler's Gorge Camp</li>
+</ul>
+<p>Always confirm which airstrip is closest to the client's chosen accommodation when arranging flight transfers.</p>` },
+
+  { id:'ny6', cat:'nyerere', label:'How does walking safari booking work at Nyerere?',
+    keywords:['walking safari nyerere','walking inside park','walking outside park','nyerere walk booking','walking safari booking'],
+    answer:`<p>Walking safaris at Nyerere are arranged differently depending on whether they are inside or outside the park:</p>
+<ul>
+  <li><strong>Walking safari INSIDE the park:</strong> Arranged through a ranger (not the accommodation). This activity must be booked by the <strong>ground team</strong>. Note this in the booking notes section.</li>
+  <li><strong>Walking safari OUTSIDE the park:</strong> Arranged through a local guide (not the accommodation). This activity must be booked by the <strong>guide</strong>. Note this in the booking notes section.</li>
+</ul>`,
+    nuanceText: 'Always note who books the walking safari in the booking notes - ground team for inside the park, guide for outside. Do not assume the accommodation handles it.' },
+
+  { id:'ny7', cat:'nyerere', label:'How does boat safari booking work at Nyerere?',
+    keywords:['boat safari nyerere','boat booking','boat outside park','boat inside park','rufiji boat','river safari booking'],
+    answer:`<p>Boat safaris at Nyerere also depend on location:</p>
+<ul>
+  <li><strong>Boat safari INSIDE the park:</strong> Arranged through the <strong>accommodation itself</strong>. Standard process - no change here.</li>
+  <li><strong>Boat safari OUTSIDE the park:</strong> Arranged through the <strong>local guide</strong> (not the accommodation). Must be booked by the guide. Note this in the booking notes section.</li>
+</ul>` },
+
+  // ── RUAHA ──
+  { id:'rh1', cat:'ruaha', label:'What is Ruaha National Park?',
+    keywords:['ruaha','ruaha national park','about ruaha','what is ruaha','ruaha park'],
+    answer:`<p><strong>Ruaha National Park</strong> is Tanzania's second-largest national park (after Nyerere) and one of East Africa's most outstanding - and least crowded - safari destinations.</p>
+<ul>
+  <li>Located approximately <strong>10–10.5 hours from Dar es Salaam</strong> by road</li>
+  <li><strong>Very exclusive</strong> - it doesn't get crowded. A genuinely remote wilderness experience.</li>
+  <li>Famed for its <strong>large elephant populations</strong> - one of the best elephant parks in East Africa</li>
+  <li>Home to <strong>large prides of lions</strong> that prey on even buffalo - unusual behaviour documented here</li>
+  <li>One of the best places in East Africa for <strong>African wild dogs</strong></li>
+  <li>Aside from rhinos, <strong>most major safari animals</strong> are easily seen here</li>
+</ul>` },
+
+  { id:'rh2', cat:'ruaha', label:'What wildlife can I see at Ruaha?',
+    keywords:['ruaha wildlife','ruaha animals','what animals ruaha','ruaha big five','lions ruaha','wild dogs ruaha','elephants ruaha','does ruaha have','animals in ruaha','see in ruaha','leopard ruaha','buffalo ruaha','giraffe ruaha','hippo ruaha','rhino ruaha','predators ruaha','where to find lions','where to see elephants','best park for elephants','best park for lions','best park for leopards','find leopards','spot wild dogs ruaha','where to find wild dogs ruaha','large elephant population','elephant herds','lion prides','where to see large herds'],
+    answer:`<p>Ruaha is exceptional for predator sightings and large mammals:</p>
+<ul>
+  <li>🦁 <strong>Lions</strong> - large prides, including unusual buffalo-hunting behaviour</li>
+  <li>🐘 <strong>Elephants</strong> - one of the highest concentrations in East Africa</li>
+  <li>🐆 <strong>Leopards</strong></li>
+  <li>🐕 <strong>African Wild Dogs</strong> - Ruaha is one of the best places in East Africa to encounter them</li>
+  <li>🐃 <strong>Buffalo</strong></li>
+  <li>🦒 <strong>Giraffes</strong></li>
+  <li>🦓 <strong>Zebra and antelopes</strong></li>
+  <li>🦅 <strong>Rich birdlife</strong></li>
+</ul>
+<p>Note: <strong>Rhinos are not present</strong> in Ruaha. All other major safari species are well represented.</p>` },
+
+  { id:'rh3', cat:'ruaha', label:'How many days do I need for Ruaha, and when can it be visited?',
+    keywords:['ruaha days','ruaha duration','how long ruaha','ruaha recommended','ruaha short trip','ruaha how many nights'],
+    answer:`<p>Ruaha's remote location means it works best as part of a longer itinerary:</p>
+<ul>
+  <li><strong>Recommended for 6+ day tours</strong> when combining with other parks - because the drive from Dar is 10–10.5 hours, it should not be a standalone 2–3 day trip by road</li>
+  <li><strong>Exception:</strong> A 3-day Ruaha-only tour is possible if the client <strong>flies in and out</strong> of the park directly</li>
+  <li>Ruaha <strong>cannot be given on the first or last day</strong> of a tour unless the client is directly flying in or out</li>
+</ul>`,
+    nuanceText: 'Never put Ruaha on day 1 or the final day of a road-based itinerary. Flying in/out is the only way a standalone short Ruaha trip works.' },
+
+  { id:'rh4', cat:'ruaha', label:'Can Ruaha connect directly to Nyerere?',
+    keywords:['ruaha nyerere connect','ruaha nyerere direct','connecting ruaha nyerere','ruaha connectivity','ruaha mikumi'],
+    answer:`<p><strong>Ruaha cannot connect directly to Nyerere.</strong> Mikumi must be included as a stopover between them.</p>
+<ul>
+  <li>✅ <strong>Ruaha → Mikumi → Nyerere:</strong> Correct route</li>
+  <li>❌ <strong>Ruaha → Nyerere directly:</strong> Not possible</li>
+</ul>
+<p>Similarly, if the client is <strong>starting or ending the tour in Iringa</strong>, the safari must be arranged through the accommodation in Iringa.</p>`,
+    nuanceText: 'Direct Ruaha–Nyerere connections do not exist. Mikumi is always required in between.' },
+
+  { id:'rh5', cat:'ruaha', label:'What airstrips and camps are in Ruaha?',
+    keywords:['ruaha airstrip','ruaha camps','msembe airstrip','jongomero airstrip','mwagusi airstrip','kigelia airstrip','jabali airstrip','nduli airstrip','mdoya airstrip','lodges ruaha'],
+    answer:`<p>Ruaha has multiple airstrips serving different camps:</p>
+<ul>
+  <li><strong>Msembe Airstrip:</strong> Ruaha River Lodge, Asanja Ruaha, Tandala Tented Camp</li>
+  <li><strong>Jongomero Airstrip:</strong> Jongomero Camp</li>
+  <li><strong>Mwagusi Airstrip:</strong> Mwagusi Safari Camp</li>
+  <li><strong>Kigelia Airstrip:</strong> Kigelia Camp, Jabali Ridge</li>
+  <li><strong>Jabali Airstrip:</strong> Jabali Ridge</li>
+  <li><strong>Nduli Airstrip:</strong> Kwihala Camp</li>
+  <li><strong>Mdoya Airstrip:</strong> Mdoya Old River Camp</li>
+</ul>
+<p>Always confirm the correct airstrip for the client's accommodation when booking flights.</p>` },
+
+  { id:'rh6', cat:'ruaha', label:'What add-on activities are available at Ruaha?',
+    keywords:['ruaha activities','ruaha add-on','ruaha walking safari','masai village ruaha','night drive ruaha','what to do ruaha'],
+    answer:`<p>In addition to standard game drives, Ruaha offers:</p>
+<ul>
+  <li><strong>Walking Safaris</strong> - guided walks in the bush with an armed ranger</li>
+  <li><strong>Night Game Drives</strong> - Ruaha is the <strong>best park in South Tanzania for night drives</strong>. Night drives can also be arranged at Nyerere, but Ruaha is preferred.</li>
+  <li><strong>Masai Village Visit</strong> - cultural add-on outside the park</li>
+</ul>` },
+
+  // ── UDZUNGWA ──
+  { id:'ud1', cat:'udzungwa', label:'What is Udzungwa Mountains National Park?',
+    keywords:['udzungwa','udzungwa mountains','about udzungwa','udzungwa national park','what is udzungwa'],
+    answer:`<p><strong>Udzungwa Mountains National Park</strong> is a unique, biodiversity-rich park that's very different from a typical safari destination - it's primarily a <strong>hiking and birding park</strong>.</p>
+<ul>
+  <li>Located <strong>8–8.5 hours from Dar es Salaam</strong> by road</li>
+  <li>Covers <strong>1,990 km²</strong> - 20% in Morogoro region, 80% in the Iringa southern highlands</li>
+  <li>Home to species found <strong>nowhere else in the world</strong> - including the Iringa red colobus and Sanje crested mangabey primates</li>
+  <li>Six registered primate species</li>
+  <li>Unusual wildlife such as the grey-faced sengi and Abbott's duiker</li>
+  <li>Accessible by road from Dar es Salaam, Arusha, Kilimanjaro, and Mbeya</li>
+</ul>` },
+
+  { id:'ud2', cat:'udzungwa', label:'What activities can I do at Udzungwa?',
+    keywords:['udzungwa activities','udzungwa hike','sanje waterfall','birdwatching udzungwa','what to do udzungwa'],
+    answer:`<p>Udzungwa offers a very different experience to the other southern parks - there are <strong>no game drives</strong>:</p>
+<ul>
+  <li>🥾 <strong>Hike to Sanje Waterfall</strong> - the signature activity; a rewarding hike to one of Tanzania's most beautiful waterfalls</li>
+  <li>🐦 <strong>Bird watching</strong> - exceptional birdlife including the Crowned Eagle, Rüppell's Vulture, Francolin, Rufous-winged Sunbird, Dappled Mountain-Robin, and more</li>
+  <li>🐒 <strong>Primate spotting</strong> - look for the Iringa red colobus and Sanje crested mangabey, found only here</li>
+</ul>` },
+
+  { id:'ud3', cat:'udzungwa', label:'How should I include Udzungwa in my itinerary?',
+    keywords:['udzungwa itinerary','udzungwa when','udzungwa planning','udzungwa placement','udzungwa first day last day','udzungwa elderly'],
+    answer:`<p>Udzungwa has specific planning rules:</p>
+<ul>
+  <li>Recommended for <strong>6+ day tours only</strong> - as a one-day add-on within a multi-park itinerary</li>
+  <li>Duration at Udzungwa is <strong>one day only</strong></li>
+  <li><strong>Cannot be on the first or last day</strong> of the tour</li>
+  <li><strong>Cannot connect directly with Nyerere</strong> - Mikumi must be included as a stop between them</li>
+  <li><strong>Not recommended for elderly clients</strong> - the hikes require reasonable physical fitness</li>
+</ul>`,
+    nuanceText: 'Never place Udzungwa on day 1 or the final day. Never route it directly from Nyerere without Mikumi. Flag for elderly clients.' },
+
+  { id:'ud4', cat:'udzungwa', label:'What wildlife is unique to Udzungwa?',
+    keywords:['udzungwa wildlife','udzungwa animals','udzungwa primates','unique species udzungwa','endemic udzungwa','does udzungwa have','monkeys udzungwa','colobus udzungwa','birds udzungwa','animals in udzungwa','see in udzungwa','where to find monkeys','where to see colobus','spot primates','find primates udzungwa','endemic animals','rare animals tanzania','where to see rare animals','colobus monkey','mangabey','where to find colobus','unique wildlife tanzania'],
+    answer:`<p>Udzungwa's wildlife is unlike any other Tanzania park - many species are <strong>endemic</strong> (found nowhere else):</p>
+<ul>
+  <li>🐒 <strong>Iringa Red Colobus</strong> - found only in Udzungwa</li>
+  <li>🐒 <strong>Sanje Crested Mangabey</strong> - found only in Udzungwa</li>
+  <li>🐘 <strong>Forest Elephants</strong> - along the southern escarpment</li>
+  <li>🦔 <strong>Grey-faced Sengi</strong> - an unusual elephant shrew relative</li>
+  <li>🦌 <strong>Abbott's Duiker</strong></li>
+  <li>6 registered primate species in total</li>
+  <li>Exceptional <strong>birdlife</strong> - including the recently discovered Francolin and Rufous-winged Sunbird</li>
+</ul>` },
+
+  // ── ACTIVITIES ──
+  { id:'ac1', cat:'activities', label:'Which park is best for night game drives?',
+    keywords:['night game drive','night drive','night safari','nocturnal','best night drive','night game drive south tanzania'],
+    answer:`<p>Night game drives are available at <strong>both Nyerere and Ruaha</strong> national parks.</p>
+<p>However, <strong>Ruaha National Park is the best option for night game drives</strong> in South Tanzania - the terrain, predator density, and nocturnal activity make it particularly rewarding.</p>
+<p>Night drives at both parks give you a chance to spot nocturnal species that are impossible to see during the day - genet cats, civets, porcupines, owls, and often predators on the hunt.</p>` },
+
+  { id:'ac2', cat:'activities', label:'What is a boat safari and where can I do it?',
+    keywords:['boat safari','river safari','boat game drive','rufiji river','boat nyerere','boat selous','boat activity'],
+    answer:`<p>A <strong>boat safari</strong> is one of the most unique activities in Tanzania - you view wildlife from a motorboat on the <strong>Rufiji River</strong> in Nyerere National Park. It's not available in any Northern Circuit park.</p>
+<p>From the boat you can see:</p>
+<ul>
+  <li>🦛 Hippos at close range</li>
+  <li>🐊 Nile crocodiles</li>
+  <li>🐘 Elephants drinking and crossing the river</li>
+  <li>🐦 Exceptional birdlife along the riverbanks</li>
+  <li>Other wildlife coming to the water</li>
+</ul>
+<p>Boat safaris can be booked through the accommodation (for inside-the-park boats) or through the guide (for outside-the-park boats).</p>` },
+
+  { id:'ac3', cat:'activities', label:'Are walking safaris available in South Tanzania?',
+    keywords:['walking safari','walk safari','on foot','bush walk','walking south tanzania','guided walk'],
+    answer:`<p>Yes - walking safaris are available in <strong>both Nyerere and Ruaha</strong>. You explore the bush on foot with a guide and an armed ranger.</p>
+<p>Booking process varies:</p>
+<ul>
+  <li><strong>Inside the park:</strong> Booked through the ground team (via a ranger) - note in booking</li>
+  <li><strong>Outside the park:</strong> Booked through the local guide - note in booking</li>
+</ul>
+<p>Walking safaris offer an immersive ground-level experience that game drives simply cannot replicate - tracking, sounds, smells, and the thrill of being on foot in the African bush.</p>` },
+
+  { id:'ac4', cat:'activities', label:'Is South Tanzania suitable for elderly clients?',
+    keywords:['elderly','older clients','senior','old age','udzungwa elderly','physical fitness','south tanzania elderly'],
+    answer:`<p>South Tanzania is broadly suitable for elderly clients, with one key exception:</p>
+<ul>
+  <li>✅ <strong>Mikumi</strong> - game drives only, excellent for elderly clients</li>
+  <li>✅ <strong>Nyerere</strong> - game drives and boat safaris, very accessible. The <strong>8-day Nyerere + Mikumi + Ruaha</strong> itinerary is specifically recommended for elderly clients.</li>
+  <li>✅ <strong>Ruaha</strong> - game drives, accessible for most fitness levels</li>
+  <li>❌ <strong>Udzungwa</strong> - <strong>not recommended for elderly clients</strong>. The activities require hiking and reasonable physical fitness.</li>
+</ul>`,
+    nuanceText: 'Flag Udzungwa as physically demanding when dealing with elderly or less-mobile clients. Recommend the 8-day Nyerere–Mikumi–Ruaha itinerary as the alternative.' },
+
+  { id:'ac5', cat:'activities', label:'What cultural add-ons are available in South Tanzania?',
+    keywords:['masai village','cultural visit','cultural tour','cultural activity','south tanzania culture'],
+    answer:`<p>A <strong>Masai Village Visit</strong> is available as a cultural add-on in both Mikumi and Ruaha areas. This is an outside-the-park activity, conducted with a local guide.</p>
+<p>The experience is the same as Masai village visits on the Northern Circuit - visiting a traditional Maasai homestead, learning about their lifestyle, and interacting with community members.</p>` },
+
+  // ── LOGISTICS ──
+  { id:'lg1', cat:'logistics', label:'How do I get to South Tanzania parks from Dar es Salaam?',
+    keywords:['getting to south tanzania','dar es salaam','from dar','connectivity','how to reach','travel to south tanzania','flight or road'],
+    answer:`<p>All South Tanzania parks are accessible from <strong>Dar es Salaam</strong> by road or air:</p>
+<table>
+  <tr><th>Park</th><th>By Road</th><th>By Air</th></tr>
+  <tr><td>Nyerere</td><td>4–4.5 hours</td><td>Auric Air, Safari Airlink, Coastal Air</td></tr>
+  <tr><td>Mikumi</td><td>6–6.5 hours</td><td>Auric Air, Safari Airlink, Coastal Air (Kikoboga airstrip)</td></tr>
+  <tr><td>Udzungwa</td><td>8–8.5 hours</td><td>Msolwa or Kilombero airstrip</td></tr>
+  <tr><td>Ruaha</td><td>10–10.5 hours</td><td>Auric Air, Safari Airlink, Coastal Air</td></tr>
+</table>
+<p>Flights are available through <strong>Auric Air, Safari Airlink, and Coastal Air</strong> for all parks. The Safari Airlink scheduled route (SAL01–SAL04) connects all southern parks in a single daily run.</p>` },
+
+  { id:'lg2', cat:'logistics', label:'Can I start my South Tanzania safari from Zanzibar?',
+    keywords:['zanzibar south tanzania','start from zanzibar','zanzibar safari','zanzibar to mikumi','zanzibar to nyerere'],
+    answer:`<p>Yes, many clients combine a South Tanzania safari with a Zanzibar beach extension.</p>
+<ul>
+  <li>For <strong>fly-in safaris</strong>: Direct flights are available from Zanzibar to Nyerere, Mikumi, and Ruaha via Safari Airlink (Zanzibar/Mafia stop on SAL03/04).</li>
+  <li>For <strong>road-based safaris</strong>: Clients can take a <strong>ferry from Zanzibar to Dar es Salaam</strong>, then travel by road. They should arrive in Dar es Salaam one day prior to begin the drive the next morning. A same-day road safari from Zanzibar is not possible.</li>
+  <li>At the end of the safari, the return journey to Zanzibar can also be made by <strong>ferry from Dar es Salaam</strong>.</li>
+</ul>`,
+    nuanceText: 'For all road transfer 2-day Mikumi tours, clients must arrive in Dar es Salaam one day prior and overnight before beginning the drive the next morning. Never offer same-day road connections from Zanzibar to any southern park. Clients can take a ferry to Dar and must overnight before driving. Always budget an overnight in Dar before a road safari.' },
+
+  { id:'lg3', cat:'logistics', label:'What is the best season to visit South Tanzania?',
+    keywords:['best time south tanzania','season south tanzania','when to visit south tanzania','dry season','rainy season','south tanzania weather','months'],
+    answer:`<p>South Tanzania tours run primarily from <strong>June to mid-March</strong>, but seasons matter:</p>
+<ul>
+  <li><strong>June to mid-March (main season):</strong> Excellent wildlife viewing across all parks. Animals concentrate around water sources, vegetation is lower, and game drives are highly productive.</li>
+  <li><strong>Mid-March to May (long rains):</strong> <strong>Only 2-day and 3-day Mikumi tours</strong> can operate during this period. No other South Tanzania parks are recommended. Roads to Nyerere, Ruaha, and Udzungwa can be very difficult during the rains.</li>
+</ul>
+<p>The peak dry season is <strong>June through October</strong>. January to mid-March is also very good, especially for birdlife.</p>`},
+
+  { id:'lg4', cat:'logistics', label:'Can I start or end my tour somewhere other than Dar?',
+    keywords:['start iringa','start morogoro','end iringa','end morogoro','tour start point','not dar','iringa safari','morogoro safari'],
+    answer:`<p>Yes, with some important notes:</p>
+<ul>
+  <li><strong>Starting/ending in Morogoro:</strong> Safaris based in Morogoro must be arranged <strong>through the accommodation</strong> the client will stay at - not through our standard process.</li>
+  <li><strong>Starting/ending in Iringa:</strong> Similarly, Iringa-based tours for Ruaha must be arranged <strong>through the Iringa accommodation</strong>.</li>
+  <li><strong>Any tour can start and end at Mikumi</strong> - it's the most flexible base in the circuit.</li>
+</ul>`,
+    nuanceText: 'Morogoro and Iringa start/end tours are arranged through the local accommodation, not through the standard MA booking process.' },
+
+  // ── ACCOMMODATION ──
+  { id:'ac_1', cat:'accommodation', label:'What accommodation options exist in Nyerere?',
+    keywords:['accommodation nyerere','camps selous','lodges nyerere','where to stay nyerere','nyerere camps','selous camps'],
+    answer:`<p>Nyerere has a range of camps and lodges, typically clustered near each airstrip:</p>
+<ul>
+  <li><strong>Rufiji River Camp</strong> - near Mtemere Airstrip, along the Rufiji River</li>
+  <li><strong>Beho Beho Camp</strong> - near Matambwe and Beho Beho airstrips; known for its elevated setting and views</li>
+  <li><strong>The Retreat Selous</strong> - near Sumbazi Airstrip</li>
+  <li><strong>Kiba Point Selous Camp / Sand Rivers Selous</strong> - near Kiba Airstrip</li>
+  <li><strong>Siwandu Camp / Lake Manze Camp</strong> - near Siwandu Airstrip</li>
+  <li><strong>Selous Serena Camp / Serena Mivumo River Lodge</strong> - near Stiegler's Gorge Airstrip</li>
+</ul>
+<p>Always match the chosen camp to the nearest airstrip when planning fly-in logistics.</p>` },
+
+  { id:'ac_2', cat:'accommodation', label:'What accommodation options exist in Ruaha?',
+    keywords:['accommodation ruaha','camps ruaha','lodges ruaha','where to stay ruaha','ruaha camps'],
+    answer:`<p>Ruaha camps range from mid-range to luxury. Key options by airstrip:</p>
+<ul>
+  <li><strong>Msembe Airstrip:</strong> Ruaha River Lodge, Asanja Ruaha, Tandala Tented Camp</li>
+  <li><strong>Jongomero Airstrip:</strong> Jongomero Camp</li>
+  <li><strong>Mwagusi Airstrip:</strong> Mwagusi Safari Camp</li>
+  <li><strong>Kigelia Airstrip:</strong> Kigelia Camp, Jabali Ridge</li>
+  <li><strong>Jabali Airstrip:</strong> Jabali Ridge</li>
+  <li><strong>Nduli Airstrip:</strong> Kwihala Camp</li>
+  <li><strong>Mdoya Airstrip:</strong> Mdoya Old River Camp</li>
+</ul>` },
+
+  { id:'ac_3', cat:'accommodation', label:'What accommodation is available in Mikumi?',
+    keywords:['accommodation mikumi','camps mikumi','where to stay mikumi','mikumi lodges','mikumi wildlife camp','vuma hills'],
+    answer:`<p>Mikumi's main accommodation options include:</p>
+<ul>
+  <li><strong>Mikumi Wildlife Camp</strong> - located near the park entrance, near Kikoboga Airstrip</li>
+  <li><strong>Vuma Hills Tented Camp</strong> - tented camp with views over the park</li>
+  <li><strong>Stanley's Kopje</strong> - in the northern part of the park</li>
+</ul>
+<p>Mikumi is best suited to <strong>mid-range and budget accommodation</strong>. It's not the park for a luxury lodge experience.</p>` },
+
+  // ── OPERATIONS ──
+  { id:'op1', cat:'operations', label:'Can I combine South Tanzania with Zanzibar?',
+    keywords:['zanzibar extension','zanzibar beach','combine zanzibar','safari and beach','zanzibar south tanzania'],
+    answer:`<p>Yes - South Tanzania and Zanzibar combine very naturally, and this is a popular itinerary for clients who want both a safari and a beach holiday.</p>
+<p>The typical structure is:</p>
+<ul>
+  <li><strong>Safari first, Zanzibar after</strong> (or vice versa) - fly between Zanzibar and the southern parks via Safari Airlink or Coastal Air</li>
+  <li>Zanzibar/Mafia is a stop on the Safari Airlink SAL03/04 route, making the connection seamless</li>
+  <li>Alternatively, fly Dar → Zanzibar after completing the safari by road</li>
+</ul>` },
+
+  { id:'op2', cat:'operations', label:'What tours are recommended for South Tanzania?',
+    keywords:['recommend tour','suggested itinerary','which tour south','best tour south tanzania','south tanzania itinerary','tour suggestion'],
+    answer:`<p>Here are our recommended South Tanzania tour structures:</p>
+<ul>
+  <li><strong>2–3 days:</strong> Mikumi only - best for budget clients or short trips from Dar</li>
+  <li><strong>3–4 days:</strong> Nyerere only - great wildlife + boat safari experience</li>
+  <li><strong>4–5 days:</strong> Nyerere + Mikumi - popular combination, good value</li>
+  <li><strong>6–7 days:</strong> Mikumi + Ruaha + Udzungwa - excellent multi-park circuit (not for elderly clients)</li>
+  <li><strong>8–10 days:</strong> Nyerere + Mikumi + Ruaha (+ optional Udzungwa) - the full Southern Circuit experience</li>
+</ul>
+<p>Use the <strong>Tour Finder</strong> for personalised recommendations based on your dates, group size, and preferences.</p>` },
+
+  { id:'op3', cat:'operations', label:'Is South Tanzania good for a short trip?',
+    keywords:['short trip south tanzania','quick safari','weekend','2 days','3 days short','short safari'],
+    answer:`<p>Yes - South Tanzania offers good options for short trips:</p>
+<ul>
+  <li><strong>2-day Mikumi:</strong> The most accessible short option from Dar es Salaam. Budget-friendly and rewarding.</li>
+  <li><strong>3-day Nyerere:</strong> The minimum for Nyerere - fits well into a short trip if flying in.</li>
+</ul>
+<p>For very short trips (2–3 days), flying into the park saves travel time significantly and makes the experience much more comfortable.</p>` },
+
+  { id:'op4', cat:'operations', label:'What is the park connectivity map for South Tanzania?',
+    keywords:['park map','south tanzania map','connectivity map','how parks connect','southern circuit map','route south tanzania'],
+    answer:`<p>Here's how the South Tanzania parks connect:</p>
+<ul>
+  <li><strong>Dar es Salaam</strong> is the gateway for all southern parks</li>
+  <li><strong>Mikumi</strong> is the central hub - it connects to all other parks</li>
+  <li><strong>Nyerere ↔ Mikumi:</strong> Direct connection ✅</li>
+  <li><strong>Mikumi ↔ Ruaha:</strong> Direct connection ✅</li>
+  <li><strong>Mikumi ↔ Udzungwa:</strong> Direct connection ✅</li>
+  <li><strong>Nyerere → Ruaha:</strong> Must go via Mikumi ⚠️</li>
+  <li><strong>Nyerere → Udzungwa:</strong> Must go via Mikumi ⚠️</li>
+  <li><strong>Udzungwa → Ruaha:</strong> Can connect directly (both accessible via Mikumi corridor)</li>
+</ul>
+<p><strong>Rule of thumb:</strong> Mikumi must always sit between Nyerere and the western parks (Ruaha, Udzungwa).</p>` },
+];
+
+// ════════════════════════════════════════════════════════════════
+//  SOUTH TANZANIA TOURS
+// ════════════════════════════════════════════════════════════════
+const TOURS_SOUTH = [
+  {name:"2 Days - Mikumi National Park (Private Tour)",                                url:"https://monkey.travel/en/usd/tour/mikumi-2-days/",                                  score:90, seasons:["all_year"],          tags:["short_duration","budget_clients"],                     excludeTags:["luxury_clients"],  parks:["mikumi"]},
+  {name:"3 Days - Mikumi National Park (Private Tour)",                                url:"https://monkey.travel/en/usd/tour/mikumi-3-days/",                                  score:70, seasons:["all_year"],          tags:["short_duration","budget_clients"],                     excludeTags:["luxury_clients"],  parks:["mikumi"]},
+  {name:"3 Days - Nyerere National Park (Private Tour)",                               url:"https://monkey.travel/en/usd/tour/nyerere-3-days/",                                 score:90, seasons:["june_to_mid_march"], tags:["short_duration","wildlife_experience"],                excludeTags:[],                  parks:["nyerere"]},
+  {name:"4 Days - Nyerere National Park (Private Tour)",                               url:"https://monkey.travel/en/usd/tour/nyerere-4-days",                                  score:90, seasons:["june_to_mid_march"], tags:["relaxed_tour","wildlife_experience"],                  excludeTags:[],                  parks:["nyerere"]},
+  {name:"4 Days - Nyerere and Mikumi National Park (Private Tour)",                    url:"https://monkey.travel/en/usd/tour/nyerere-mikumi-4-days/",                          score:90, seasons:["june_to_mid_march"], tags:["short_duration","budget_clients","wildlife_experience"],excludeTags:["luxury_clients"],  parks:["nyerere","mikumi"]},
+  {name:"5 Days - Nyerere and Mikumi National Park (Private Tour)",                    url:"https://monkey.travel/en/usd/tour/nyerere-mikumi-5-days/",                          score:90, seasons:["june_to_mid_march"], tags:["budget_clients","wildlife_experience"],                excludeTags:["luxury_clients"],  parks:["nyerere","mikumi"]},
+  {name:"6 Days - Mikumi, Ruaha and Udzungwa Mountains (Private Tour)",                url:"https://monkey.travel/en/usd/tour/mikumi-ruaha(2)-udzungwa-6-days/",               score:90, seasons:["june_to_mid_march"], tags:["wildlife_experience"],                                 excludeTags:["old_age"],         parks:["mikumi","ruaha","udzungwa"]},
+  {name:"7 Days - Mikumi, Ruaha and Udzungwa Mountains (Private Tour)",                url:"https://monkey.travel/en/usd/tour/mikumi-ruaha(3)-udzungwa-7-days/",               score:90, seasons:["june_to_mid_march"], tags:["extended_duration","wildlife_experience"],             excludeTags:["old_age"],         parks:["mikumi","ruaha","udzungwa"]},
+  {name:"8 Days - Nyerere, Mikumi and Ruaha (Private Tour)",                           url:"https://monkey.travel/en/usd/tour/nyerere-mikumi-ruaha-8-days/",                   score:70, seasons:["all_year"],          tags:["extended_duration","old_age_friendly"],                excludeTags:[],                  parks:["nyerere","mikumi","ruaha"]},
+  {name:"8 Days - Nyerere, Mikumi, Ruaha and Udzungwa Mountains (Private Tour)",       url:"https://monkey.travel/en/usd/tour/nyerere-mikumi-ruaha(2)-udzungwa-8-days/",       score:90, seasons:["june_to_mid_march"], tags:["extended_duration","wildlife_experience"],             excludeTags:["old_age"],         parks:["nyerere","mikumi","ruaha","udzungwa"]},
+  {name:"9 Days - Nyerere, Mikumi, Ruaha and Udzungwa Mountains (Private Tour)",       url:"https://monkey.travel/en/usd/tour/nyerere-mikumi-ruaha(3)-udzungwa-9-days/",       score:90, seasons:["june_to_mid_march"], tags:["extended_duration","wildlife_experience"],             excludeTags:["old_age"],         parks:["nyerere","mikumi","ruaha","udzungwa"]},
+  {name:"10 Days - Nyerere, Mikumi, Ruaha and Udzungwa Mountains (Private Tour)",      url:"https://monkey.travel/en/usd/tour/nyerere-mikumi-ruaha(3)-udzungwa-10-days/",      score:90, seasons:["june_to_mid_march"], tags:["extended_duration","maximum_park_coverage"],           excludeTags:["old_age"],         parks:["nyerere","mikumi","ruaha","udzungwa"]},
+];
+
+const SOUTH_PARKS = [
+  {id:'nyerere',  label:'Nyerere (Selous)', icon:'🦛'},
+  {id:'mikumi',   label:'Mikumi',           icon:'🦒'},
+  {id:'ruaha',    label:'Ruaha',            icon:'🐆'},
+  {id:'udzungwa', label:'Udzungwa',         icon:'🌿'},
+];
+
+const MONTH_NAMES=['','January','February','March','April','May','June','July','August','September','October','November','December'];
+const MONTH_MAP={january:1,february:2,march:3,april:4,may:5,june:6,july:7,august:8,september:9,october:10,november:11,december:12,jan:1,feb:2,mar:3,apr:4,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
+
+function getSeasonTags(month){
+  const m=parseInt(month), tags=new Set(['all_year']);
+  if([6,7,8,9,10,11,12,1,2,3].includes(m)) tags.add('june_to_mid_march');
+  return tags;
+}
+function seasonMatches(t,m){ return t.seasons.some(s=>getSeasonTags(m).has(s)); }
+function durationMatches(t,dur){
+  if(!dur) return true;
+  const match=t.name.match(/^(\d+)\s+Days?/i);
+  if(!match) return true;
+  const td=parseInt(match[1]);
+  if(dur==='8plus') return td>=8;
+  return td===parseInt(dur);
+}
+function parkMatches(t,sel){ if(!sel||!sel.length) return true; return sel.every(p=>t.parks&&t.parks.includes(p)); }
+
+function findTours(p){
+  let matched=TOURS_SOUTH.filter(t=>{
+    if(!seasonMatches(t,p.month)) return false;
+    if(p.duration&&p.duration!=='skip'&&!durationMatches(t,p.duration)) return false;
+    if(p.budget==='luxury'&&t.excludeTags&&t.excludeTags.includes('luxury_clients')) return false;
+    if(p.budget==='budget'&&t.excludeTags&&t.excludeTags.includes('budget_clients')) return false;
+    if(p.budget==='budget'&&t.tags&&t.tags.includes('luxury_clients')&&!t.tags.includes('budget_clients')) return false;
+    if(p.experience==='wildlife'&&!t.tags.includes('wildlife_experience')) return false;
+    if(p.experience==='parks'&&!t.tags.includes('maximum_park_coverage')) return false;
+    if(p.selectedParks&&p.selectedParks.length&&!parkMatches(t,p.selectedParks)) return false;
+    return true;
+  });
+  matched.sort((a,b)=>b.score-a.score);
+  return matched.slice(0,3);
+}
+
+// ════════════════════════════════════════════════════════════════
+//  UNANSWERED LOG
+// ════════════════════════════════════════════════════════════════
+let unansweredLog = [];
+
+function logUnanswered(text) {
+  if (!unansweredLog.includes(text)) unansweredLog.push(text);
+  renderLog();
+}
+function clearLog() {
+  unansweredLog = [];
+  renderLog();
+}
+function renderLog() {
+  const el = document.getElementById('logList');
+  if (!unansweredLog.length) {
+    el.innerHTML = '<div class="log-empty">None yet - questions with no KB match will appear here.</div>';
+    return;
+  }
+  el.innerHTML = unansweredLog.map(q=>`<div class="log-item">❓ ${q}</div>`).join('');
+}
+
+// ════════════════════════════════════════════════════════════════
+//  KB MATCHING ENGINE - improved
+// ════════════════════════════════════════════════════════════════
+function isTourRequest(text){
+  const t = text.toLowerCase();
+  // Explicit tour/itinerary request phrases
+  if(/\b(recommend|suggestion|suggest|find.*tour|tour.*find|which tour|what tour|good tour|best tour|suggest.*itinerary|itinerary.*suggest|plan.*tour|book.*tour|tour.*book|help.*tour|tour.*help|show.*tour|available.*tour|tour.*available)\b/i.test(t)) return true;
+  // "N day(s) tour/safari/itinerary" or "tour for N days"
+  if(/\b\d+[\s-]day(s)?\s*(tour|safari|itinerary|trip|package)\b/i.test(t)) return true;
+  if(/\b(tour|safari|itinerary|trip)\s*(for|of)?\s*\d+[\s-]?day(s)?\b/i.test(t)) return true;
+  // standalone "3 days" / "3 nights" / "a week" / "two weeks" without other context
+  if(/\b(\d+)\s*(days?|nights?)\b/i.test(t) && /\b(south|tanzania|mikumi|nyerere|selous|ruaha|udzungwa|safari|tour|itinerary|travel|going|visit)\b/i.test(t)) return true;
+  if(/\b(a week|two weeks|one week|week.long|fortnight)\b/i.test(t)) return true;
+  return false;
+}
+
+// Detect which park(s) the user is asking about
+function detectParks(text){
+  const lower = text.toLowerCase();
+  const parks = [];
+  if(/\bruaha\b/.test(lower)) parks.push('ruaha');
+  if(/\bnyerere\b|\bselous\b/.test(lower)) parks.push('nyerere');
+  if(/\bmikumi\b/.test(lower)) parks.push('mikumi');
+  if(/\budzungwa\b/.test(lower)) parks.push('udzungwa');
+  return parks;
+}
+
+// Detect question intent keywords
+const INTENT_PATTERNS = [
+  { intent:'duration',   re:/\b(how many days|how long|how many nights|duration|minimum|recommended.*days|days.*need|nights.*need)\b/i },
+  { intent:'wildlife',   re:/\b(wildlife|animals|what.*see|see.*what|species|birds|predators|big five|elephant|lion|wild dog|leopard|hippo|croc)\b/i },
+  { intent:'activities', re:/\b(activities|what.*do|do.*what|walking|walk safari|boat safari|night drive|night game|cultural|masai|add.?on)\b/i },
+  { intent:'airstrip',   re:/\b(airstrip|airstrips|airstrip|camp|lodge|accommodation|where.*stay|stay.*where)\b/i },
+  { intent:'connectivity',re:/\b(connect|directly|combine|route|from.*to|transfer|stopover|can i go|can.*connect|link)\b/i },
+  { intent:'season',     re:/\b(when.*visit|best.*time|season|months|visit.*when|weather|rainy|dry season)\b/i },
+  { intent:'logistics',  re:/\b(get there|getting there|from dar|from zanzibar|flight|fly|road|drive|by road|connectivity)\b/i },
+  { intent:'cost',       re:/\b(budget|cheap|affordable|luxury|cost|price)\b/i },
+];
+
+function detectIntents(text){
+  return INTENT_PATTERNS.filter(p=>p.re.test(text)).map(p=>p.intent);
+}
+
+function scoreKB(entry, text, detectedParks, detectedIntents){
+  const lower = text.toLowerCase();
+  let score = 0;
+
+  // 1. Keyword matching (weighted by phrase length) - also partial word match
+  const queryTokens = lower.split(/\s+/).filter(w => w.length > 2);
+  for(const kw of entry.keywords){
+    const kwLower = kw.toLowerCase();
+    if(lower.includes(kwLower)) {
+      score += kw.split(' ').length * 2; // exact phrase
+    } else {
+      // partial: each keyword token that appears in query or vice versa
+      const kwTokens = kwLower.split(/\s+/).filter(w => w.length > 2);
+      for(const qt of queryTokens){
+        for(const kt of kwTokens){
+          if(kt.startsWith(qt) || qt.startsWith(kt)) score += 0.8;
+        }
+      }
+    }
+  }
+
+  // 1b. Label token matching - boost if query words appear in label
+  const labelLower = entry.label.toLowerCase();
+  const labelTokens = labelLower.split(/\s+/).filter(w => w.length > 2);
+  for(const qt of queryTokens){
+    for(const lt of labelTokens){
+      if(lt === qt) score += 1.5;
+      else if(lt.startsWith(qt) || qt.startsWith(lt)) score += 0.5;
+    }
+  }
+
+  // 2. Exact label match is a strong signal
+  if(lower.includes(entry.label.toLowerCase())) score += 20;
+
+  // 3. Park specificity bonus - reward entries that match the asked-about park
+  const entryParks = detectParks(entry.label + ' ' + entry.keywords.join(' '));
+  if(detectedParks.length > 0){
+    const overlap = detectedParks.filter(p => entryParks.includes(p) || entry.cat === p);
+    score += overlap.length * 5;
+    // Penalise entries for a DIFFERENT park when the question is clearly park-specific
+    if(detectedParks.length === 1 && entryParks.length > 0 && !overlap.length) score -= 4;
+  }
+
+  // 4. Intent alignment bonus
+  if(detectedIntents.length > 0){
+    const entryText = (entry.label + ' ' + entry.keywords.join(' ')).toLowerCase();
+    for(const intent of detectedIntents){
+      const p = INTENT_PATTERNS.find(x=>x.intent===intent);
+      if(p && p.re.test(entryText)) score += 3;
+    }
+  }
+
+  // 5. Penalise generic "What is X" / overview entries when query has specific intent
+  const isGenericOverview = /^(what is|about|overview)/i.test(entry.label);
+  const hasSpecificIntent = detectedIntents.some(i => ['wildlife','activities','duration','airstrip','connectivity','season','logistics','cost'].includes(i));
+  if(isGenericOverview && hasSpecificIntent) score -= 5;
+
+  // 6. Penalise entries when query contains specific animal names but entry is not wildlife category
+  const ANIMAL_WORDS = /\b(hippo|elephant|lion|leopard|cheetah|wild dog|crocodile|croc|giraffe|zebra|buffalo|rhino|monkey|primate|bird|colobus|mangabey|antelope|wildebeest)\b/i;
+  if(ANIMAL_WORDS.test(text) && entry.cat !== 'mikumi' && entry.cat !== 'nyerere' && entry.cat !== 'ruaha' && entry.cat !== 'udzungwa' && entry.cat !== 'overview'){
+    score -= 3;
+  }
+  // Extra boost: if query has animal word AND entry label contains "wildlife"/"animals"
+  if(ANIMAL_WORDS.test(text) && /wildlife|animals/i.test(entry.label)) score += 6;
+
+  return score;
+}
+
+function findAnswers(query){
+  const parks   = detectParks(query);
+  const intents = detectIntents(query);
+  const scored  = KB
+    .map(e => ({ entry: e, score: scoreKB(e, query, parks, intents) }))
+    .filter(x => x.score >= 4)   // minimum meaningful score — kills weak fuzzy noise
+    .sort((a, b) => b.score - a.score);
+
+  if(!scored.length) return [];
+
+  const topScore = scored[0].score;
+  // Only return multiple answers if they're very close in score AND question is multi-park
+  // Tighter threshold: second result must score at least 90% of top (was 85%)
+  const threshold = parks.length > 1 ? topScore * 0.80 : topScore * 0.90;
+  const matches = scored.filter(x => x.score >= Math.max(4, threshold)).slice(0, parks.length > 1 ? 3 : 1);
+
+  // Deduplicate: don't return two entries from the same park-category combo
+  const seen = new Set();
+  const deduped = matches.filter(m => {
+    const key = m.entry.cat + '_' + m.entry.id.replace(/\d+/,'');
+    if(seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+
+  return deduped.map(m => m.entry);
+}
+
+// ════════════════════════════════════════════════════════════════
+//  CLAUDE API FALLBACK
+// ════════════════════════════════════════════════════════════════
+const SOUTH_TZ_KNOWLEDGE = `
+SOUTH TANZANIA SAFARI - KNOWLEDGE BASE
+
+PARKS OVERVIEW:
+- Mikumi NP: 6-6.5 hrs from Dar by road (300 km). Morogoro to Mikumi is only 2-2.5 hrs. Min 2 days, max 3 days. Budget-friendly, accessible. Wildlife: elephants, lions, giraffes, zebras, buffalo, wildebeest, antelopes, hippos (Hippo Pools). Airstrip: Kikoboga. Good for budget clients. Not recommended for luxury clients. No 1-day Mikumi tours from Zanzibar or Dar. Tours can start/end at Morogoro (arrange through accommodation). Any tour can start and end at Mikumi.
+
+- Nyerere NP (formerly Selous): 4-4.5 hrs from Dar. Min 3 days recommended (large park). Connects directly only with Mikumi. For Ruaha or Udzungwa, Mikumi must be a stopover. Landscape: savannahs, woodlands, wetlands, Rufiji River. Wildlife: elephants, lions, giraffes, buffaloes, wild dogs (sighting chance less than 20%), hippos, crocs. Activities: game drives, boat safari (Rufiji River), walking safari, night game drives. Walking/boat outside park arranged through local guide. Walking inside park via ranger. Airstrips: Mtemere (near Rufiji River Camp), Matambwe (near Beho Beho), Sumbazi (near The Retreat Selous), Kiba (Kiba Point, Sand Rivers), Beho Beho, Siwandu (near Siwandu Camp, Lake Manze), Stiegler's Gorge (Serena Mivumo, Stiegler's Gorge Camp). Can be placed at start or end of tour.
+
+- Ruaha NP: Tanzania's 2nd largest (after Nyerere). 10-10.5 hrs from Dar by road. Recommended for 6+ day tours. 3-day tour possible if client flies in/out. Cannot be on first or last day unless flying. Cannot connect directly to Nyerere (Mikumi needed as stopover). Very exclusive, not crowded. Wildlife: elephants, lions (large prides that hunt buffalo), leopards, wild dogs (one of best places in East Africa), giraffes, zebras, antelopes. No rhinos. Activities: game drives, walking safari, night game drives (BEST in South Tanzania), Masai village visit. Airstrips: Msembe (Ruaha River Lodge, Asanja Ruaha, Tandala Tented Camp), Jongomero (Jongomero Camp), Mwagusi (Mwagusi Safari Camp), Kigelia (Kigelia Camp, Jabali Ridge), Jabali (Jabali Ridge), Nduli (Kwihala Camp), Mdoya (Mdoya Old River Camp). If starting/ending at Iringa, arrange through accommodation.
+
+- Udzungwa Mountains NP: 8-8.5 hrs from Dar. Only 1 day at park. Recommended for 6+ day tours. NOT on first or last day of tour. Cannot connect directly with Nyerere (Mikumi needed). Not for elderly clients (requires hiking). Wildlife: Iringa Red Colobus (endemic), Sanje Crested Mangabey (endemic), forest elephants, grey-faced sengi, Abbott's duiker, 6 primate species. Birds: Crowned Eagle, Ruppell's Vulture, Francolin, Rufous-winged Sunbird. Activities: Hike to Sanje Waterfall, birdwatching.
+
+CONNECTIVITY RULES:
+- Mikumi is the central hub connecting all parks
+- Nyerere and Mikumi: direct connection
+- Mikumi and Ruaha: direct connection
+- Mikumi and Udzungwa: direct connection
+- Nyerere to Ruaha: MUST go via Mikumi
+- Nyerere to Udzungwa: MUST go via Mikumi
+- No 1-day Mikumi from Zanzibar or Dar (client must arrive Dar one day prior for road safari)
+
+SAFARI AIRLINK SCHEDULE:
+SAL01/02: Dar 10:30 - Selous 11:00 - Mikumi 11:55 - S.Highlands/Iringa 12:30 - Ruaha 13:00
+SAL03/04: Ruaha 13:15 - Iringa/S.Highlands 13:45 - Mikumi 14:45 - Selous 15:00 - Zanzibar/Mafia 15:45 - Dar 17:00
+Also: Auric Air, Coastal Air
+
+SEASONS: June to mid-March recommended for all parks. Mid-March to May = long rains. ONLY 2-day and 3-day Mikumi tours can operate during mid-March to May. No other parks operate during this period.
+
+RECOMMENDED TOURS:
+- 2 Days Mikumi: budget, all year including mid-March to May, from Dar, not luxury
+- 3 Days Mikumi: budget, all year including mid-March to May
+- 3 Days Nyerere: june to mid-march only, wildlife
+- 4 Days Nyerere: june to mid-march only, relaxed
+- 4 Days Nyerere+Mikumi: budget, june to mid-march only
+- 5 Days Nyerere+Mikumi: budget, june to mid-march only
+- 6 Days Mikumi+Ruaha+Udzungwa: june to mid-march only, not elderly
+- 7 Days Mikumi+Ruaha+Udzungwa: june to mid-march only, extended, not elderly
+- 8 Days Nyerere+Mikumi+Ruaha: all year, elderly OK
+- 8 Days Nyerere+Mikumi+Ruaha+Udzungwa: june to mid-march only, not elderly
+- 9 Days Nyerere+Mikumi+Ruaha+Udzungwa: june to mid-march only, not elderly
+- 10 Days Nyerere+Mikumi+Ruaha+Udzungwa: june to mid-march only, extended
+
+ACTIVITIES:
+- Night game drives: both Nyerere and Ruaha, but RUAHA is best
+- Boat safari: Nyerere (Rufiji River) only. Inside park = through accommodation. Outside = through guide.
+- Walking safari: Nyerere and Ruaha. Inside park = via ranger (booked by ground team). Outside park = via local guide.
+- Masai village visit: Mikumi and Ruaha areas (outside park, through guide)
+- Udzungwa: hike to Sanje Waterfall, birdwatching. No game drives.
+
+ELDERLY CLIENT NOTES: Avoid Udzungwa. 8-day Nyerere+Mikumi+Ruaha recommended for elderly.
+BUDGET NOTES: Mikumi is best for budget. Not recommended for luxury clients.
+ZANZIBAR COMBO: Fly between Zanzibar and southern parks via SAL03/04. Alternatively, clients can take a ferry between Zanzibar and Dar es Salaam. Road safari requires overnight in Dar before driving the next morning.
+`;
+
+// ── CASUAL REWRITER (no API, no cost) ──────────────────────────
+// Transforms formal HTML answers into a warmer, chattier tone
+// entirely in-browser using text substitution + sentence rewrapping.
+function askCasualVersion(formalHtml){
+  return new Promise(resolve => {
+    // Work on a temporary element to walk the DOM
+    const tmp = document.createElement('div');
+    tmp.innerHTML = formalHtml;
+
+    // Map of formal → casual phrase replacements (applied to text nodes)
+    const replacements = [
+      [/\bIt is recommended that\b/gi, "We'd suggest"],
+      [/\bIt is recommended\b/gi, "We'd recommend"],
+      [/\bIt is advisable\b/gi, "It's worth noting"],
+      [/\bIt should be noted that\b/gi, "Just so you know,"],
+      [/\bPlease note that\b/gi, "Good to know —"],
+      [/\bPlease note\b/gi, "Heads up —"],
+      [/\bNote:\b/gi, "Quick note:"],
+      [/\bAlways confirm\b/gi, "Make sure to confirm"],
+      [/\bAlways advise\b/gi, "We always recommend telling clients"],
+      [/\bAlways note\b/gi, "Just remember to note"],
+      [/\bAlways\b/gi, "Always"],
+      [/\bcan be reached\b/gi, "you can get there"],
+      [/\bThis makes\b/gi, "That's why"],
+      [/\bThis activity must be booked by\b/gi, "this needs to be booked by"],
+      [/\bThe standard option for most safaris\b/gi, "most clients go this route"],
+      [/\bclients who\b/gi, "travellers who"],
+      [/\bClient\b/g, "your traveller"],
+      [/\bthe client\b/gi, "your traveller"],
+      [/\bclients\b/gi, "travellers"],
+      [/\bFor a relaxed, unhurried visit\b/gi, "if you want a chilled, unhurried trip"],
+      [/\bCannot connect directly\b/gi, "can't connect directly"],
+      [/\bcannot connect directly\b/gi, "can't go direct"],
+      [/\bCannot be given\b/gi, "shouldn't be used"],
+      [/\bcannot be given\b/gi, "shouldn't be used"],
+      [/\bworks best as part of\b/gi, "fits best as part of"],
+      [/\bIn addition to\b/gi, "On top of"],
+      [/\bIn addition\b/gi, "Also"],
+      [/\bHowever,\b/gi, "That said,"],
+      [/\bFurthermore,\b/gi, "Also,"],
+      [/\bMoreover,\b/gi, "Plus,"],
+      [/\bTherefore,\b/gi, "So,"],
+      [/\bSubsequently,\b/gi, "After that,"],
+      [/\bPrior to\b/gi, "Before"],
+      [/\bsubsequent to\b/gi, "after"],
+      [/\bcommence\b/gi, "start"],
+      [/\butilise\b/gi, "use"],
+      [/\butilize\b/gi, "use"],
+      [/\bpurchase\b/gi, "buy"],
+      [/\bapproximately\b/gi, "about"],
+      [/\bsignificantly\b/gi, "a lot"],
+      [/\bexceptional\b/gi, "amazing"],
+      [/\boutstanding\b/gi, "fantastic"],
+      [/\bexcellent\b/gi, "great"],
+      [/\bsuperb\b/gi, "brilliant"],
+      [/\bincludes\b/gi, "has"],
+      [/\bincluding\b/gi, "like"],
+      [/\boperates\b/gi, "runs"],
+      [/\bserving\b/gi, "covering"],
+      [/\bwith the accommodation\b/gi, "with the lodge or camp"],
+      [/\bthrough the accommodation\b/gi, "through the lodge or camp"],
+      [/\baccompanied by\b/gi, "with"],
+      [/\bThis is the same experience offered on\b/gi, "Similar to what we do on"],
+      [/\bdo not offer\b/gi, "don't do"],
+      [/\bDo not\b/g, "Don't"],
+      [/\bdo not\b/g, "don't"],
+      [/\bDoes not\b/g, "Doesn't"],
+      [/\bdoes not\b/g, "doesn't"],
+      [/\bIs not\b/g, "Isn't"],
+      [/\bis not\b/g, "isn't"],
+      [/\bAre not\b/g, "Aren't"],
+      [/\bare not\b/g, "aren't"],
+      [/\bCannot\b/g, "Can't"],
+      [/\bcannot\b/g, "can't"],
+      [/\bWould not\b/g, "Wouldn't"],
+      [/\bwould not\b/g, "wouldn't"],
+      [/\bWill not\b/g, "Won't"],
+      [/\bwill not\b/g, "won't"],
+      [/\bShould not\b/g, "Shouldn't"],
+      [/\bshould not\b/g, "shouldn't"],
+    ];
+
+    // Walk all text nodes and apply replacements
+    function walkText(node){
+      if(node.nodeType===Node.TEXT_NODE){
+        let t = node.textContent;
+        replacements.forEach(([rx, rep]) => { t = t.replace(rx, rep); });
+        node.textContent = t;
+      } else {
+        node.childNodes.forEach(walkText);
+      }
+    }
+    walkText(tmp);
+
+    // Soften the opening <p> tag if it starts with a bold declarative
+    const firstP = tmp.querySelector('p');
+    if(firstP){
+      const txt = firstP.textContent.trim();
+      // If it's a short declarative opener, prepend a friendly phrase
+      if(txt.length < 80 && !txt.match(/^(So|Here|Just|Good|Quick|We'd|That)/i)){
+        firstP.innerHTML = 'Here\'s the quick answer — ' + firstP.innerHTML.charAt(0).toLowerCase() + firstP.innerHTML.slice(1);
+      }
+    }
+
+    // Append a warm sign-off only if there's no nuance strip
+    const lastP = tmp.querySelector('p:last-of-type');
+    const signoffs = [
+      'Hope that helps — let us know if you have any other questions! 😊',
+      'Feel free to reach out if you need anything else!',
+      'Give us a shout if you want more details on any of this.',
+      'Let us know if this helps or if you\'d like us to dig deeper!',
+    ];
+    const signoff = document.createElement('p');
+    signoff.style.cssText = 'margin-top:10px;color:var(--muted);font-size:12.5px;';
+    signoff.textContent = signoffs[Math.floor(Math.random()*signoffs.length)];
+    tmp.appendChild(signoff);
+
+    resolve(tmp.innerHTML);
+  });
+}
+
+async function handleNoMatch(query){
+  addNoMatch(query);
+}
+
+// ════════════════════════════════════════════════════════════════
+//  TOUR FINDER
+// ════════════════════════════════════════════════════════════════
+
+// Find top tours using only month + duration (for park mismatch check)
+function findTopToursForParkCheck(month, duration){
+  let matched=TOURS_SOUTH.filter(t=>{
+    if(!seasonMatches(t,month)) return false;
+    if(duration&&!durationMatches(t,duration)) return false;
+    return true;
+  });
+  matched.sort((a,b)=>b.score-a.score);
+  return matched.slice(0,3);
+}
+
+function buildTourFinder(originalQuery){
+  const preDuration = originalQuery ? extractDurationFromQuery(originalQuery) : null;
+  let tfParams={month:null,year:null,people:null,duration:preDuration||null,selectedParks:[],budget:'any',experience:'any'};
+  let tfStep=0;
+
+  const wrapper=document.createElement('div'); wrapper.className='tf-wrapper';
+  const finder=document.createElement('div'); finder.className='tour-finder';
+  const hdr=document.createElement('div'); hdr.className='tf-header';
+  hdr.innerHTML=`<span class="tf-title">🧭 South Tanzania Tour Finder</span>`;
+  const restartBtn=document.createElement('button'); restartBtn.className='tf-restart'; restartBtn.textContent='↺ Restart';
+  restartBtn.onclick=()=>{ tfParams={month:null,year:null,people:null,duration:null,selectedParks:[],budget:'any',experience:'any'}; tfStep=0; body.innerHTML=''; runTFStep(); };
+  hdr.appendChild(restartBtn); finder.appendChild(hdr);
+  const body=document.createElement('div'); body.className='tf-body'; finder.appendChild(body);
+  wrapper.appendChild(finder);
+
+  function scrollBody(){ scrollToBottom(); }
+  function tfBotSay(html,delay=500){
+    return new Promise(res=>{
+      const msg=document.createElement('div'); msg.className='tf-msg-bot';
+      const av=document.createElement('div'); av.className='tf-avatar'; av.textContent='🌿';
+      const bub=document.createElement('div'); bub.className='tf-bubble';
+      bub.innerHTML='<div class="tf-typing"><span></span><span></span><span></span></div>';
+      msg.appendChild(av); msg.appendChild(bub); body.appendChild(msg); scrollBody();
+      setTimeout(()=>{ bub.innerHTML=html; scrollBody(); res(); },delay);
+    });
+  }
+  function tfUserSay(text){
+    const msg=document.createElement('div'); msg.className='tf-msg-user';
+    const bub=document.createElement('div'); bub.className='tf-user-bubble'; bub.textContent=text;
+    msg.appendChild(bub); body.appendChild(msg); scrollBody();
+  }
+  function addTFChips(options,onSelect){
+    const row=document.createElement('div'); row.className='tf-chips';
+    options.forEach(opt=>{
+      const c=document.createElement('button'); c.className='tf-chip'; c.textContent=opt.label;
+      c.onclick=()=>{ row.querySelectorAll('.tf-chip').forEach(x=>x.disabled=true); c.classList.add('selected'); tfUserSay(opt.label); setTimeout(()=>onSelect(opt.val),200); };
+      row.appendChild(c);
+    });
+    body.appendChild(row); scrollBody(); return row;
+  }
+  function addTFInput(placeholder,onSubmit){
+    const row=document.createElement('div'); row.className='tf-input-row';
+    const inp=document.createElement('input'); inp.className='tf-text-input'; inp.placeholder=placeholder;
+    const btn=document.createElement('button'); btn.className='tf-send';
+    btn.innerHTML=`<svg width="14" height="14" viewBox="0 0 24 24"><path d="M2 21L23 12 2 3v7l15 2-15 2z"/></svg>`;
+    const submit=()=>{ const v=inp.value.trim(); if(!v) return; inp.disabled=true; btn.disabled=true; tfUserSay(v); setTimeout(()=>onSubmit(v),200); };
+    inp.onkeydown=e=>{ if(e.key==='Enter') submit(); }; btn.onclick=submit;
+    row.appendChild(inp); row.appendChild(btn); body.appendChild(row); scrollBody();
+    setTimeout(()=>inp.focus(),100); return row;
+  }
+
+  // Duration chips - each value maps to actual day numbers used in durationMatches
+  // '2'→2days, '3'→3days, '4'→4days, '5'→5days, '6'→6days, '7'→7days, '8plus'→8+
+  const DURATION_STEPS = [
+    {label:'Any duration', val:'skip'},
+    {label:'2 days', val:'2'},
+    {label:'3 days', val:'3'},
+    {label:'4 days', val:'4'},
+    {label:'5 days', val:'5'},
+    {label:'6 days', val:'6'},
+    {label:'7 days', val:'7'},
+    {label:'8+ days', val:'8plus'},
+  ];
+
+  const STEPS_DEF=[
+    {key:'month',   type:'text',  ask:'When are you planning to travel? Just tell me the month.', placeholder:'e.g. July, October…'},
+    {key:'people',  type:'text',  ask:'How many adults will be travelling?', placeholder:'e.g. 2 adults'},
+    {key:'duration',type:'chips', ask:'How many days are you thinking?', chips: DURATION_STEPS},
+    {key:'parks',   type:'parks'},
+    {key:'experience', type:'chips', ask:'What kind of experience matters most to you?', chips:[
+      {label:'Any',val:'any'},
+      {label:'🌿 Wildlife & game drives',val:'wildlife'},
+      {label:'🗺 Maximum park coverage',val:'parks'},
+    ]},
+    {key:'budget',  type:'chips', ask:'What\'s your budget preference?', chips:[
+      {label:'Any',val:'any'},{label:'💎 Luxury',val:'luxury'},{label:'💰 Budget-conscious',val:'budget'}
+    ]},
+  ];
+
+  function parseMonth(text){ const l=text.toLowerCase(); for(const[k,v] of Object.entries(MONTH_MAP)){ if(l.includes(k)) return v; } return null; }
+
+  function extractDurationFromQuery(text){
+    const m = text.match(/\b(\d+)[\s-]?day(s)?\b/i);
+    if(m){
+      const d=parseInt(m[1]);
+      if(d>=2&&d<=7) return String(d);
+      if(d>=8) return '8plus';
+    }
+    if(/\ba week\b|7[\s-]?days?\b/i.test(text)) return '7';
+    if(/\btwo weeks\b|14[\s-]?days?\b/i.test(text)) return '8plus';
+    return null;
+  }
+
+  async function runTFStep(){
+    if(tfStep>=STEPS_DEF.length){ await showResults(); return; }
+    const step=STEPS_DEF[tfStep];
+    // Skip duration step if pre-filled from original query
+    if(step.key==='duration'&&preDuration){
+      const dLabel=DURATION_STEPS.find(d=>d.val===preDuration)?.label||preDuration+' days';
+      await tfBotSay(`Got it — I'll look for <strong>${dLabel}</strong> tours (from your request).`);
+      tfStep++; await runTFStep(); return;
+    }
+    if(step.type==='parks'){ await runParkStep(); return; }
+    await tfBotSay(step.ask);
+    if(step.type==='chips'){
+      addTFChips(step.chips, async val=>{
+        if(step.key==='duration') tfParams.duration=val==='skip'?null:val;
+        else tfParams[step.key]=val;
+        tfStep++; await runTFStep();
+      });
+    } else {
+      addTFInput(step.placeholder||'Type here…', async text=>{
+        if(step.key==='month'){
+          const m=parseMonth(text);
+          if(!m){ await tfBotSay('Didn\'t catch that - try <strong>July</strong> or <strong>October</strong>.',300); addTFInput(step.placeholder,async t2=>{tfParams.month=parseMonth(t2)||7;tfStep++;await runTFStep();}); return; }
+          tfParams.month=m;
+        } else if(step.key==='people'){
+          const n=parseInt(text.match(/\d+/)?.[0]); tfParams.people=n||2;
+        }
+        tfStep++; await runTFStep();
+      });
+    }
+  }
+
+  // ── Park step with full v15-style mismatch logic + Ruaha short-trip warning ──
+  async function runParkStep(){
+    await tfBotSay('Would you like to focus on specific parks? <span style="font-size:11px;opacity:.6">(optional - skip to see all options)</span>');
+    const chipsRow=document.createElement('div'); chipsRow.className='tf-chips';
+    const selected=new Set();
+    SOUTH_PARKS.forEach(park=>{
+      const c=document.createElement('button'); c.className='tf-chip park-chip'; c.textContent=`${park.icon} ${park.label}`; c.dataset.id=park.id;
+      c.onclick=()=>{ if(selected.has(park.id)){selected.delete(park.id);c.classList.remove('selected');}else{selected.add(park.id);c.classList.add('selected');} };
+      chipsRow.appendChild(c);
+    });
+    body.appendChild(chipsRow); scrollBody();
+    const actionRow=document.createElement('div'); actionRow.style.cssText='display:flex;gap:8px;padding-left:34px;margin-top:6px;';
+    const skipBtn=document.createElement('button'); skipBtn.className='tf-chip'; skipBtn.textContent='⟶ Skip, show all';
+    skipBtn.onclick=async()=>{ disableBlock(); tfParams.selectedParks=[]; tfStep++; await runTFStep(); };
+    const confirmBtn=document.createElement('button'); confirmBtn.className='tf-confirm-btn'; confirmBtn.textContent='Confirm →';
+    confirmBtn.onclick=async()=>{
+      if(!selected.size){skipBtn.click();return;}
+      disableBlock();
+      tfParams.selectedParks=[...selected];
+      const labels=[...selected].map(id=>SOUTH_PARKS.find(p=>p.id===id)?.label||id);
+      tfUserSay('Parks: '+labels.join(', '));
+      await handleParkSelection([...selected]);
+    };
+    actionRow.appendChild(skipBtn); actionRow.appendChild(confirmBtn); body.appendChild(actionRow); scrollBody();
+    function disableBlock(){ chipsRow.querySelectorAll('button').forEach(b=>b.disabled=true); actionRow.querySelectorAll('button').forEach(b=>b.disabled=true); }
+  }
+
+  // ── Park mismatch + Ruaha-on-short-trip handler ──
+  async function handleParkSelection(selected){
+    // Check for Ruaha on short duration (2–5 days by road)
+    const durNum = tfParams.duration ? (tfParams.duration==='8plus'?8:parseInt(tfParams.duration)) : null;
+    const ruahaSelected = selected.includes('ruaha');
+    const isShortTrip = durNum !== null && durNum <= 5;
+
+    if(ruahaSelected && isShortTrip){
+      // Show Ruaha short-trip warning
+      await new Promise(r=>setTimeout(r,400));
+      const alertWrap=document.createElement('div'); alertWrap.className='tf-msg-bot';
+      const av=document.createElement('div'); av.className='tf-avatar'; av.textContent='🌿';
+      const bub=document.createElement('div'); bub.className='tf-bubble';
+      bub.innerHTML=`<strong>Just a heads up about Ruaha</strong><br><br>
+Ruaha is <strong>10–10.5 hours from Dar es Salaam</strong> by road. On a <strong>${durNum}-day tour</strong>, combining it with a full overland journey doesn't work well - most of the time would be spent in the vehicle.<br><br>
+<strong>However, it's absolutely doable if you fly in and out.</strong> Safari Airlink connects Dar → Ruaha in about 2.5 hours. A 3-day fly-in to Ruaha is a fantastic trip.`;
+      alertWrap.appendChild(av); alertWrap.appendChild(bub);
+      body.appendChild(alertWrap); scrollBody();
+
+      await new Promise(r=>setTimeout(r,300));
+      addTFChips([
+        {label:'I\'ll fly in - show Ruaha tours',val:'fly_ruaha'},
+        {label:'Suggest something else for this duration',val:'no_ruaha'},
+      ], async val=>{
+        if(val==='fly_ruaha'){
+          // Keep Ruaha but note fly-in; remove other parks that don't work with short fly-in
+          tfParams.selectedParks=['ruaha'];
+          await tfBotSay('Great - I\'ll look for tours that include Ruaha, best accessed by flight.',400);
+        } else {
+          // Drop Ruaha from selection
+          tfParams.selectedParks=selected.filter(p=>p!=='ruaha');
+          if(!tfParams.selectedParks.length) tfParams.selectedParks=[];
+          await tfBotSay('No problem - I\'ll find the best options for your duration without Ruaha.',400);
+        }
+        tfStep++; await runTFStep();
+      });
+      return;
+    }
+
+    // Standard park mismatch check (v15 style)
+    const top3=findTopToursForParkCheck(tfParams.month, tfParams.duration);
+    const top3Parks=new Set();
+    top3.forEach(t=>{ if(t.parks) t.parks.forEach(p=>top3Parks.add(p)); });
+    const notInTop=selected.filter(p=>!top3Parks.has(p));
+
+    if(notInTop.length>0 && top3.length>0){
+      await new Promise(r=>setTimeout(r,400));
+      const notInTopLabels=notInTop.map(id=>SOUTH_PARKS.find(p=>p.id===id)?.label||id);
+      const alertWrap=document.createElement('div'); alertWrap.className='tf-msg-bot';
+      const av=document.createElement('div'); av.className='tf-avatar'; av.textContent='🌿';
+      const bub=document.createElement('div'); bub.className='tf-bubble';
+      bub.innerHTML=`⚠ <strong>Just a heads up!</strong><br><br>
+<strong>${notInTopLabels.join(' & ')}</strong> ${notInTopLabels.length>1?'are':'is'} not in our top-rated combinations for your dates${tfParams.duration&&tfParams.duration!=='skip'?' and duration':''}.<br><br>
+You can keep your selection and I'll find the best available tours, or switch to our top recommendations.`;
+      alertWrap.appendChild(av); alertWrap.appendChild(bub);
+      body.appendChild(alertWrap); scrollBody();
+      await new Promise(r=>setTimeout(r,300));
+      addTFChips([{label:'Keep my selection',val:'keep'},{label:'Use recommended tours',val:'use_top'}], async val=>{
+        if(val==='use_top'){
+          tfParams.selectedParks=[...top3Parks];
+          await tfBotSay('Got it - I\'ll use our top recommended parks for this trip. 🌍',400);
+        } else {
+          await tfBotSay('No problem - I\'ll find the best tours with your selected parks.',400);
+        }
+        tfStep++; await runTFStep();
+      });
+      return;
+    }
+
+    // No issues - proceed
+    tfStep++; await runTFStep();
+  }
+
+  async function showResults(){
+    const results=findTours(tfParams);
+
+    // Summary pills
+    const pills=[];
+    if(tfParams.month) pills.push({l:'Month',v:MONTH_NAMES[tfParams.month]});
+    if(tfParams.people) pills.push({l:'Pax',v:tfParams.people});
+    if(tfParams.duration&&tfParams.duration!=='skip') pills.push({l:'Days',v:tfParams.duration==='8plus'?'8+':tfParams.duration});
+    if(tfParams.selectedParks&&tfParams.selectedParks.length) pills.push({l:'Parks',v:tfParams.selectedParks.join(', ')});
+    if(tfParams.experience&&tfParams.experience!=='any') pills.push({l:'Focus',v:{wildlife:'Wildlife',parks:'Max parks'}[tfParams.experience]||tfParams.experience});
+    if(tfParams.budget&&tfParams.budget!=='any') pills.push({l:'Budget',v:tfParams.budget==='luxury'?'Luxury':'Budget'});
+    if(pills.length){
+      const strip=document.createElement('div'); strip.className='tf-summary-strip';
+      pills.forEach(({l,v})=>{ const p=document.createElement('div'); p.className='tf-pill'; p.innerHTML=`<span class="tf-pill-label">${l}</span> ${v}`; strip.appendChild(p); });
+      body.appendChild(strip); scrollBody();
+    }
+
+    if(!results.length){
+      // Progressive relaxation
+      const relaxSteps=[
+        {apply:(p)=>{ p.selectedParks=[]; }},
+        {apply:(p)=>{ p.duration=null; }},
+        {apply:(p)=>{ p.experience='any'; }},
+        {apply:(p)=>{ p.budget='any'; }},
+      ];
+      let relaxed=Object.assign({},tfParams);
+      let relaxedResults=[];
+      for(const rs of relaxSteps){
+        rs.apply(relaxed);
+        relaxedResults=findTours(relaxed);
+        if(relaxedResults.length) break;
+      }
+      await tfBotSay('No exact matches for those filters - widening the search…',600);
+      if(!relaxedResults.length){ await tfBotSay('Couldn\'t find matching tours even with relaxed filters. Please contact our team directly.',500); addTFChips([{label:'↺ Start over',val:'r'}],()=>restartBtn.click()); return; }
+      await tfBotSay('Here are the closest matches I found:',500); showCards(relaxedResults); return;
+    }
+
+    const mName=MONTH_NAMES[tfParams.month]||'';
+    await tfBotSay(`Based on your preferences${mName?' for <strong>'+mName+'</strong>':''} - here's what I'd suggest:`,700);
+    showCards(results);
+  }
+
+  function showCards(results){
+    const wrap=document.createElement('div'); wrap.style.padding='4px 0';
+    results.forEach(t=>{
+      const card=document.createElement('div'); card.className='tf-result-card';
+      const seasonLabel=t.seasons.includes('all_year')?'All year':'Jun–Mar';
+      card.innerHTML=`
+        <div class="tf-rc-meta">
+          <span class="tf-badge tf-badge-private">Private</span>
+          <span class="tf-badge tf-badge-match">${seasonLabel}</span>
+          <span class="tf-badge tf-badge-match">${t.score>=90?'⭐ Best match':'→ Good match'}</span>
+        </div>
+        <div class="tf-rc-name">${t.name}</div>
+        <a class="tf-rc-url" href="${t.url}" target="_blank">🔗 ${t.url}</a>`;
+      wrap.appendChild(card);
+    });
+    body.appendChild(wrap); scrollBody();
+    setTimeout(async()=>{
+      await tfBotSay('Would you like to search again?',600);
+      addTFChips([{label:'🔄 New search',val:'r'},{label:'Done, thanks!',val:'d'}],val=>{
+        if(val==='r') restartBtn.click();
+        else tfBotSay('Great! Feel free to ask anything else about South Tanzania. 🌍',300);
+      });
+    },400);
+  }
+
+  setTimeout(()=>runTFStep(),100);
+  return wrapper;
+}
+
+// ════════════════════════════════════════════════════════════════
+//  COPY BUTTON
+// ════════════════════════════════════════════════════════════════
+function attachCopyBtn(msgInner,plainText){
+  const btn=document.createElement('button'); btn.className='copy-btn'; btn.innerHTML='📋 Copy';
+  btn.onclick=()=>{ navigator.clipboard.writeText(plainText).then(()=>{ btn.textContent='✓ Copied'; btn.classList.add('copied'); setTimeout(()=>{btn.innerHTML='📋 Copy';btn.classList.remove('copied');},1800); }); };
+  msgInner.appendChild(btn);
+}
+
+// ════════════════════════════════════════════════════════════════
+//  UI - SIDEBAR
+// ════════════════════════════════════════════════════════════════
+let activeCat=null;
+
+function init(){ renderCategories(); renderQuestions(KB); document.getElementById('userInput').focus(); }
+
+function renderCategories(){
+  const list=document.getElementById('catList'); list.innerHTML='';
+  const counts={}; KB.forEach(q=>{counts[q.cat]=(counts[q.cat]||0)+1;});
+  const allBtn=document.createElement('button'); allBtn.className='cat-btn active';
+  allBtn.innerHTML=`<span>🌍</span> All Topics <span class="cc">${KB.length}</span>`;
+  allBtn.onclick=()=>{ activeCat=null; list.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active')); allBtn.classList.add('active'); renderQuestions(KB); document.getElementById('qLabel').textContent='All Questions'; };
+  list.appendChild(allBtn);
+  CATEGORIES.forEach(cat=>{
+    const btn=document.createElement('button'); btn.className='cat-btn';
+    btn.innerHTML=`<span>${cat.icon}</span> ${cat.label} <span class="cc">${counts[cat.id]||0}</span>`;
+    btn.onclick=()=>{ activeCat=cat.id; list.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); renderQuestions(KB.filter(q=>q.cat===cat.id)); document.getElementById('qLabel').textContent=cat.label; };
+    list.appendChild(btn);
+  });
+}
+
+function renderQuestions(items){
+  const qList=document.getElementById('qList'); qList.innerHTML='';
+  if(!items.length){ qList.innerHTML='<div style="color:var(--muted);font-size:12px;padding:8px 10px;font-style:italic;">No results.</div>'; return; }
+  items.forEach(q=>{
+    const btn=document.createElement('button'); btn.className='q-btn'; btn.textContent=q.label;
+    btn.onclick=()=>{ qList.querySelectorAll('.q-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.getElementById('userInput').value=q.label; autoResize(document.getElementById('userInput')); document.getElementById('userInput').focus(); };
+    qList.appendChild(btn);
+  });
+}
+
+function handleSearch(){
+  const term=document.getElementById('searchInput').value.toLowerCase().trim();
+  const base=activeCat?KB.filter(q=>q.cat===activeCat):KB;
+  if(!term){renderQuestions(base);return;}
+  // Fuzzy: score each item
+  const tokens = term.split(/\s+/).filter(w=>w.length>1);
+  const scored = base.map(q=>{
+    let s=0;
+    const haystack=(q.label+' '+q.keywords.join(' ')).toLowerCase();
+    if(haystack.includes(term)) s+=10; // exact phrase
+    tokens.forEach(tok=>{
+      if(haystack.includes(tok)) s+=2;
+      else {
+        // partial token match
+        haystack.split(/\s+/).forEach(hw=>{ if(hw.startsWith(tok)||tok.startsWith(hw)) s+=0.8; });
+      }
+    });
+    return {q, s};
+  }).filter(x=>x.s>0).sort((a,b)=>b.s-a.s).map(x=>x.q);
+  renderQuestions(scored);
+}
+
+function quickAsk(text){ document.getElementById('userInput').value=text; autoResize(document.getElementById('userInput')); sendMessage(); }
+function getCatIcon(cat){
+  const c = CATEGORIES.find(x=>x.id===cat); return c ? c.icon : '💬';
+}
+
+let suggHighlight = -1;
+function handleSuggestions(val){
+  const box = document.getElementById('suggestionsBox');
+  const term = val.trim().toLowerCase();
+  if(term.length < 2){ box.style.display='none'; box.innerHTML=''; suggHighlight=-1; return; }
+
+  const items = [];
+
+  // Tour trigger suggestion — takes priority, skip KB suggestions
+  if(isTourRequest(val)){
+    items.push({type:'tour', label:'🧭 Open Tour Finder for "'+val+'"', val});
+    // Don't add KB suggestions alongside tour requests — keeps it clean
+  } else {
+    // KB question matching - fuzzy, higher threshold than before
+    const parks = detectParks(val);
+    const intents = detectIntents(val);
+    const scored = KB.map(e=>({e, s:scoreKB(e,val,parks,intents)}))
+      .filter(x=>x.s>=4)
+      .sort((a,b)=>b.s-a.s)
+      .slice(0,5);
+
+    scored.forEach(({e})=>{
+      items.push({type:'kb', label:e.label, val:e.label, cat:e.cat});
+    });
+  }
+
+  if(!items.length){ box.style.display='none'; box.innerHTML=''; return; }
+
+  box.innerHTML='';
+  suggHighlight=-1;
+  let allEls = [];
+
+  if(items.some(i=>i.type==='tour')){
+    const sep=document.createElement('div'); sep.className='sugg-separator'; sep.textContent='Tour Finder';
+    box.appendChild(sep);
+  }
+  items.forEach((item,idx)=>{
+    let el;
+    if(item.type==='tour'){
+      el=document.createElement('div'); el.className='sugg-tour-item';
+      el.innerHTML=`<span>🧭</span><span>${item.label}</span>`;
+      el.onclick=()=>{ box.style.display='none'; document.getElementById('userInput').value=item.val; sendMessage(); };
+    } else {
+      if(idx===0||(idx>0&&items[idx-1].type==='tour')){
+        const sep=document.createElement('div'); sep.className='sugg-separator'; sep.textContent='Questions';
+        box.appendChild(sep);
+      }
+      el=document.createElement('div'); el.className='sugg-item';
+      el.innerHTML=`<span class="sugg-icon">${getCatIcon(item.cat)}</span><span class="sugg-label">${item.label}</span>`;
+      el.onclick=()=>{ box.style.display='none'; document.getElementById('userInput').value=item.val; autoResize(document.getElementById('userInput')); sendMessage(); };
+    }
+    el.dataset.idx=allEls.length;
+    el.onmouseenter=()=>{ highlightSugg(parseInt(el.dataset.idx),allEls); };
+    box.appendChild(el);
+    allEls.push(el);
+  });
+
+  box.style.display='block';
+  box._allEls = allEls;
+}
+
+function highlightSugg(idx, els){
+  els.forEach((e,i)=>{ e.classList.toggle('highlighted', i===idx); });
+  suggHighlight=idx;
+}
+
+function closeSuggestions(){ 
+  const box=document.getElementById('suggestionsBox'); 
+  box.style.display='none'; box.innerHTML=''; suggHighlight=-1;
+}
+
+function handleKey(e){
+  const box=document.getElementById('suggestionsBox');
+  const els=box._allEls||[];
+  if(box.style.display!=='none'&&els.length){
+    if(e.key==='ArrowDown'){ e.preventDefault(); highlightSugg(Math.min(suggHighlight+1,els.length-1),els); return; }
+    if(e.key==='ArrowUp'){ e.preventDefault(); highlightSugg(Math.max(suggHighlight-1,0),els); return; }
+    if(e.key==='Enter'&&suggHighlight>=0){ e.preventDefault(); els[suggHighlight].click(); return; }
+    if(e.key==='Escape'){ closeSuggestions(); return; }
+  }
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}
+}
+
+// Close suggestions when clicking outside
+document.addEventListener('click', e=>{
+  const box=document.getElementById('suggestionsBox');
+  const input=document.getElementById('userInput');
+  if(box&&!box.contains(e.target)&&e.target!==input) closeSuggestions();
+});
+function autoResize(el){ el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,120)+'px'; }
+
+async function sendMessage(){
+  closeSuggestions();
+  const input=document.getElementById('userInput'); const text=input.value.trim(); if(!text) return;
+  document.getElementById('chatIntro').style.display='none';
+  addUserMsg(text); input.value=''; input.style.height='auto';
+  document.querySelectorAll('.q-btn').forEach(b=>b.classList.remove('active'));
+  const tourReq=isTourRequest(text); const matches=findAnswers(text);
+  if(tourReq){ launchTourFinder(text); }
+  else if(matches.length===0){ await handleNoMatch(text); }
+  else { addAssistantMsg(matches); }
+  scrollToBottom();
+}
+
+function addUserMsg(text){
+  const msgs=document.getElementById('messages'); const d=document.createElement('div'); d.className='msg-user'; d.textContent=text; msgs.appendChild(d);
+}
+
+function addNoMatch(query){
+  logUnanswered(query);
+  const msgs=document.getElementById('messages'); const wrapper=document.createElement('div'); wrapper.className='msg-assistant';
+  const inner=document.createElement('div'); inner.className='msg-inner';
+  inner.style.paddingTop='26px';
+  inner.innerHTML=`<p class="no-match">I don't have a specific answer for that in the South Tanzania knowledge base. Try rephrasing, or browse by category in the sidebar.</p>`;
+  attachCopyBtn(inner,'');
+  wrapper.appendChild(inner);
+  const uDiv=document.createElement('div'); uDiv.className='unanswered-strip';
+  uDiv.innerHTML=`<span class="unanswered-label">📝 Logged</span>This question has been added to the unanswered log in the sidebar for review.`;
+  wrapper.appendChild(uDiv);
+  msgs.appendChild(wrapper);
+}
+
+// Strip emojis and leading whitespace from text — used for formal view only
+// KB data is never modified; this only affects rendered HTML
+function stripEmojisFromHtml(html){
+  const tmp=document.createElement('div');
+  tmp.innerHTML=html;
+  function walkStrip(node){
+    if(node.nodeType===Node.TEXT_NODE){
+      // Remove emoji unicode ranges + trim leading space left behind
+      node.textContent=node.textContent
+        .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE00}-\u{FEFF}\u{1F000}-\u{1F02F}\u{1F0A0}-\u{1F0FF}\u{1F100}-\u{1F1FF}\u{1F200}-\u{1F2FF}\u{1F900}-\u{1F9FF}\u{E000}-\u{F8FF}✅❌⚠️🔗]/gu,'')
+        .replace(/^\s+/,''); // trim leading space emoji left behind
+    } else { node.childNodes.forEach(walkStrip); }
+  }
+  walkStrip(tmp);
+  return tmp.innerHTML;
+}
+
+function addAssistantMsg(matches){
+  const msgs=document.getElementById('messages');
+  matches.forEach((entry,idx)=>{
+    const wrapper=document.createElement('div'); wrapper.className='msg-assistant';
+    const inner=document.createElement('div'); inner.className='msg-inner'; inner.style.paddingTop='26px';
+
+    // Build formal HTML — strip emojis for the formal/email tone
+    // (KB answer data is NOT modified; stripping is render-only)
+    let rawHtml='';
+    if(matches.length>1&&idx===0) rawHtml=`<span class="section-head">${entry.label}</span>`+entry.answer;
+    else if(matches.length>1) rawHtml=`<hr><span class="section-head">${entry.label}</span>`+entry.answer;
+    else rawHtml=entry.answer;
+    let formalHtml=stripEmojisFromHtml(rawHtml);
+
+    // Tone toggle
+    const toggle=document.createElement('div'); toggle.className='tone-toggle';
+    const formalBtn=document.createElement('button'); formalBtn.className='tone-btn active'; formalBtn.textContent='Formal';
+    const casualBtn=document.createElement('button'); casualBtn.className='tone-btn'; casualBtn.textContent='Casual';
+    toggle.appendChild(formalBtn); toggle.appendChild(casualBtn);
+
+    // Content area
+    const contentArea=document.createElement('div');
+    contentArea.innerHTML=formalHtml;
+
+    inner.appendChild(toggle);
+    inner.appendChild(contentArea);
+
+    let casualHtml=null;
+    let casualLoading=false;
+
+    formalBtn.onclick=()=>{
+      formalBtn.classList.add('active'); casualBtn.classList.remove('active');
+      contentArea.innerHTML=formalHtml;
+      attachCopyBtn(inner, inner.innerText||inner.textContent);
+    };
+
+    casualBtn.onclick=async()=>{
+      if(casualLoading) return;
+      casualBtn.classList.add('active'); formalBtn.classList.remove('active');
+      if(casualHtml){
+        contentArea.innerHTML=casualHtml;
+        attachCopyBtn(inner, inner.innerText||inner.textContent);
+        return;
+      }
+      // Load casual version
+      casualLoading=true;
+      contentArea.innerHTML='<div class="tone-loading"><span></span><span></span><span></span></div>';
+      try{
+        casualHtml=await askCasualVersion(entry.answer);
+        contentArea.innerHTML=casualHtml;
+      } catch(e){
+        contentArea.innerHTML=formalHtml;
+        formalBtn.classList.add('active'); casualBtn.classList.remove('active');
+      }
+      casualLoading=false;
+      attachCopyBtn(inner, inner.innerText||inner.textContent);
+    };
+
+    const plainText=contentArea.innerText||contentArea.textContent;
+    attachCopyBtn(inner,plainText);
+    wrapper.appendChild(inner);
+    if(entry.nuanceText){
+      const nDiv=document.createElement('div'); nDiv.className='nuance-strip';
+      nDiv.innerHTML=`<span class="nuance-label">⚠️ Sales Note</span>${entry.nuanceText}`;
+      wrapper.appendChild(nDiv);
+    }
+    msgs.appendChild(wrapper);
+  });
+}
+
+function launchTourFinder(originalQuery){ const msgs=document.getElementById('messages'); msgs.appendChild(buildTourFinder(originalQuery)); scrollToBottom(); }
+function scrollToBottom(){ const s=document.getElementById('chatScroll'); s.scrollTop=s.scrollHeight; }
+
+init();
+
+// ════════════════════════════════════════════════════════════════
+//  GOOGLE SHEETS SYNC
+// ════════════════════════════════════════════════════════════════
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbwZiNDl_ekVRiQICPeAfrz2XQ6NKGsgZvCsYzHEe-f4jYeZFM9O2Dhwjmlw7Z5fobvE/exec";
+// Admin password is validated server-side in Apps Script only — not stored here
+
+// On load: try to pull latest KB from sheet (read is public, no password needed)
+async function syncFromSheet() {
+  try {
+    const res = await fetch(SHEET_URL + "?action=read");
+    const rows = await res.json();
+    if (!Array.isArray(rows) || rows.length === 0) return;
+    // Merge: sheet entries override/add to the built-in KB
+    // Built-in KB entries without a sheet counterpart remain untouched
+    rows.forEach(row => {
+      if (!row.id || !row.cat || !row.label || !row.answer) return;
+      row.keywords = row.keywords ? row.keywords.split(',').map(k=>k.trim()).filter(Boolean) : [];
+      const existing = KB.findIndex(e => e.id === row.id);
+      if (existing >= 0) KB[existing] = row;
+      else KB.push(row);
+    });
+    renderCategories();
+    renderQuestions(KB);
+    document.getElementById('syncBar').textContent = 'Last synced: ' + new Date().toLocaleTimeString();
+  } catch(e) {
+    // Silently fail — built-in KB still works
+    console.warn('Sheet sync failed:', e);
+  }
+}
+
+async function pushToSheet(pass) {
+  // Serialise KB: convert keywords array back to comma string for the sheet
+  const payload = KB.map(e => ({
+    id: e.id,
+    cat: e.cat,
+    label: e.label,
+    keywords: Array.isArray(e.keywords) ? e.keywords.join(',') : (e.keywords||''),
+    answer: e.answer,
+    nuanceText: e.nuanceText || ''
+  }));
+  const url = SHEET_URL + "?action=write&token=" + encodeURIComponent(pass) + "&data=" + encodeURIComponent(JSON.stringify(payload));
+  const res = await fetch(url);
+  const text = await res.text();
+  if (text.trim() !== 'ok') throw new Error(text);
+}
+
+// ════════════════════════════════════════════════════════════════
+//  ADMIN PANEL UI
+// ════════════════════════════════════════════════════════════════
+let adminUnlocked = false;
+
+function openAdmin() {
+  document.getElementById('adminOverlay').classList.add('open');
+  if (!adminUnlocked) {
+    setTimeout(() => document.getElementById('adminPassInput').focus(), 100);
+  }
+}
+function closeAdmin() {
+  document.getElementById('adminOverlay').classList.remove('open');
+}
+function overlayClick(e) {
+  if (e.target === document.getElementById('adminOverlay')) closeAdmin();
+}
+
+// Password is NEVER stored in this file.
+// Whatever you type is sent to Apps Script which validates it server-side.
+// A wrong password will be rejected silently when you try to save.
+let adminTypedPass = '';
+
+function checkAdminPass() {
+  const val = document.getElementById('adminPassInput').value.trim();
+  const st = document.getElementById('lockStatus');
+  if (!val) {
+    st.className = 'admin-status err';
+    st.textContent = 'Please enter a password.';
+    return;
+  }
+  adminTypedPass = val;
+  adminUnlocked = true;
+  document.getElementById('adminLock').style.display = 'none';
+  const main = document.getElementById('adminMain');
+  main.style.display = 'flex';
+  renderAdminList();
+  syncFromSheet();
+}
+
+function switchTab(id, btn) {
+  document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-' + id).classList.add('active');
+  if (id === 'edit') renderAdminList();
+}
+
+function setStatus(elId, type, msg) {
+  const el = document.getElementById(elId);
+  el.className = 'admin-status ' + type;
+  el.textContent = msg;
+}
+
+// ── ADD ──
+function clearAddForm() {
+  ['f-cat','f-label','f-keywords','f-answer','f-nuance'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el.tagName === 'SELECT') el.selectedIndex = 0;
+    else el.value = '';
+  });
+  document.getElementById('addStatus').className = 'admin-status';
+}
+
+async function adminAddEntry() {
+  const label = document.getElementById('f-label').value.trim();
+  const answer = document.getElementById('f-answer').value.trim();
+  if (!label || !answer) { setStatus('addStatus','err','Question and Answer are required.'); return; }
+
+  const cat = document.getElementById('f-cat').value;
+  const keywordsRaw = document.getElementById('f-keywords').value;
+  const nuance = document.getElementById('f-nuance').value.trim();
+
+  // Generate a unique id
+  const id = cat.slice(0,2) + '_' + Date.now();
+  const keywords = keywordsRaw.split(',').map(k=>k.trim()).filter(Boolean);
+  // Auto-add label words as keywords too
+  label.toLowerCase().split(/\s+/).forEach(w => { if(w.length>3 && !keywords.includes(w)) keywords.push(w); });
+
+  const entry = { id, cat, label, keywords, answer, nuanceText: nuance };
+  KB.push(entry);
+
+  const btn = document.getElementById('addBtn');
+  btn.disabled = true;
+  setStatus('addStatus','loading','Saving to Google Sheet...');
+  try {
+    await pushToSheet(adminTypedPass);
+    setStatus('addStatus','ok','✓ Saved! "' + label + '" is now live for everyone.');
+    clearAddForm();
+    renderCategories();
+    renderQuestions(KB);
+    renderAdminList();
+    document.getElementById('syncBar').textContent = 'Last synced: ' + new Date().toLocaleTimeString();
+  } catch(e) {
+    // Entry already added to KB locally even if sheet push fails
+    setStatus('addStatus','err','Added locally but sheet sync failed. Try again. ' + e.message);
+  }
+  btn.disabled = false;
+}
+
+// ── EDIT / DELETE LIST ──
+function renderAdminList() {
+  const list = document.getElementById('adminKbList');
+  const term = (document.getElementById('adminSearchInput').value||'').toLowerCase().trim();
+  const items = term
+    ? KB.filter(e => e.label.toLowerCase().includes(term) || (e.keywords||[]).join(' ').includes(term))
+    : KB;
+  list.innerHTML = '';
+  if (!items.length) { list.innerHTML = '<div style="font-size:12px;color:var(--muted);padding:8px;">No results.</div>'; return; }
+  items.forEach(entry => {
+    const row = document.createElement('div'); row.className = 'admin-kb-item';
+    const catLabel = (CATEGORIES.find(c=>c.id===entry.cat)||{}).label || entry.cat;
+    row.innerHTML = `
+      <div class="admin-kb-item-info">
+        <div class="admin-kb-item-label">${entry.label}</div>
+        <div class="admin-kb-item-meta">${catLabel} &middot; ID: ${entry.id}</div>
+      </div>
+      <div class="admin-kb-item-actions">
+        <button class="admin-kb-action" onclick="adminEditEntry('${entry.id}')">Edit</button>
+        <button class="admin-kb-action del" onclick="adminDeleteEntry('${entry.id}')">Delete</button>
+      </div>`;
+    list.appendChild(row);
+  });
+}
+
+function adminEditEntry(id) {
+  const entry = KB.find(e=>e.id===id);
+  if (!entry) return;
+  // Switch to add tab and pre-fill
+  document.querySelectorAll('.admin-tab').forEach((b,i)=>{ b.classList.toggle('active',i===0); });
+  document.querySelectorAll('.admin-section').forEach((s,i)=>{ s.classList.toggle('active',i===0); });
+  document.getElementById('f-cat').value = entry.cat;
+  document.getElementById('f-label').value = entry.label;
+  document.getElementById('f-keywords').value = (Array.isArray(entry.keywords)?entry.keywords:String(entry.keywords||'')).toString();
+  document.getElementById('f-answer').value = entry.answer;
+  document.getElementById('f-nuance').value = entry.nuanceText||'';
+  // Remove old entry so save creates fresh
+  const idx = KB.findIndex(e=>e.id===id);
+  if(idx>=0) KB.splice(idx,1);
+  setStatus('addStatus','loading','Editing "' + entry.label + '" — update fields and click Save.');
+}
+
+async function adminDeleteEntry(id) {
+  const entry = KB.find(e=>e.id===id);
+  if (!entry) return;
+  if (!confirm('Delete this entry? It will be removed from the sheet and everyone will stop seeing it.')) return;
+  const idx = KB.findIndex(e=>e.id===id);
+  if(idx>=0) KB.splice(idx,1);
+  renderCategories(); renderQuestions(KB); renderAdminList();
+  setStatus('editStatus','loading','Deleting from sheet...');
+  try {
+    await pushToSheet(adminTypedPass);
+    setStatus('editStatus','ok','✓ Deleted. Change is live for everyone.');
+    document.getElementById('syncBar').textContent = 'Last synced: ' + new Date().toLocaleTimeString();
+  } catch(e) {
+    setStatus('editStatus','err','Deleted locally but sheet sync failed. Try again.');
+  }
+}
+
+// Kick off sheet sync on load (silently)
+syncFromSheet();
+</script>
+</body>
+</html>
